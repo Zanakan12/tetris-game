@@ -1,0 +1,28 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #000;
+    color: #fff;
+    margin: 0;
+}
+
+#grid {
+    display: grid;
+    grid-template-columns: repeat(10, 30px);
+    grid-template-rows: repeat(20, 30px);
+    gap: 1px;
+    margin: 20px auto;
+    background-color: #222;
+    width: 302px;
+    border: 2px solid #fff;
+}
+
+#grid div {
+    width: 30px;
+    height: 30px;
+    background-color: #333;
+}
+
+#score-container {
+    margin-top: 10px;
+}
