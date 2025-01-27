@@ -56,7 +56,20 @@ document.addEventListener("DOMContentLoaded", () => {
     current.forEach((index) => {
       const square = squares[currentPosition + index];
       square.classList.add("block", currentLetter); // Ajoute la classe de la lettre
-      square.textContent = currentLetter; // Affiche la lettre
+      square.textContent = (() => {
+        switch (currentLetter) {
+          case "L":
+            return "🟥";
+          case "T":
+            return "🟩";
+          case "I":
+            return "🟪";
+          case "O":
+            return "🟨";
+          default:
+            return ""; // Option par défaut si aucune correspondance
+        }
+      })();
     });
   }
 
@@ -72,8 +85,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Déplacement vers le bas
   function moveDown() {
-    if (!isPaused) { // Si le jeu n'est pas en pause
-    resetButton.style.display = "";
+    if (!isPaused) {
+      // Si le jeu n'est pas en pause
+      resetButton.style.display = "";
       undraw();
       currentPosition += width;
       draw();
@@ -81,7 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
       endGame(); // Vérifier si le jeu est terminé après chaque déplacement
     }
   }
-  
 
   // Gérer les collisions et geler les blocs
   function freeze() {
@@ -93,6 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
       current.forEach((index) =>
         squares[currentPosition + index].classList.add("taken")
       );
+      removeLine();
       startNewTetromino();
     }
   }
@@ -134,9 +148,21 @@ document.addEventListener("DOMContentLoaded", () => {
   // Faire pivoter le Tetromino
   function rotate() {
     undraw();
-    currentRotation =
+    const nextRotation =
       (currentRotation + 1) % customTetrominoes[currentLetter].length;
-    current = customTetrominoes[currentLetter][currentRotation];
+    const next = customTetrominoes[currentLetter][nextRotation];
+
+    // Vérifiez si la rotation est possible
+    const isValidRotation = next.every(
+      (index) =>
+        squares[currentPosition + index] && // Vérifie que la cellule existe
+        !squares[currentPosition + index].classList.contains("taken") // Vérifie qu'elle n'est pas prise
+    );
+
+    if (isValidRotation) {
+      currentRotation = nextRotation;
+      current = next;
+    }
     draw();
   }
 
@@ -159,11 +185,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Contrôles clavier
   document.addEventListener("keydown", (e) => {
+    if (isPaused) return; // Bloque les mouvements si le jeu est en pause
     if (e.keyCode === 37) moveLeft();
     else if (e.keyCode === 39) moveRight();
     else if (e.keyCode === 38) rotate();
     else if (e.keyCode === 40) moveDown();
   });
+
   const resetButton = document.getElementById("reset-btn");
   resetButton.addEventListener("click", resetGrid);
 
@@ -172,6 +200,9 @@ document.addEventListener("DOMContentLoaded", () => {
       squares[i].classList.remove("block", "taken", ...letters);
       squares[i].textContent = "";
     }
+    isPaused = false;
+    pauseButton.textContent = "Pause";
+    resetButton.style.display = "block";
   }
 
   function endGame() {
@@ -198,22 +229,23 @@ document.addEventListener("DOMContentLoaded", () => {
     for (let i = 0; i < 199; i += width) {
       const row = Array.from({ length: width }, (_, j) => i + j);
   
+      // Vérifier si la ligne est complète
       if (row.every((index) => squares[index].classList.contains("taken"))) {
+        // Supprimer les blocs de la ligne
         row.forEach((index) => {
           squares[index].classList.remove("taken", "block", ...letters);
           squares[index].textContent = "";
         });
   
-        // Retirer les cellules de la ligne effacée
-        const squaresRemoved = squares.splice(i, width);
+        // Faire descendre toutes les lignes au-dessus
+        const squaresAbove = squares.splice(0, i); // Enlever les lignes au-dessus
+        squares = [...Array(width).fill(null), ...squaresAbove, ...squares.slice(i)]; // Reconstituer la grille
   
-        // Replacer en haut de la grille
-        squares = [...squaresRemoved, ...squares];
-  
-        // Mettre à jour le DOM
+        // Recréer la grille visuellement
         const fragment = document.createDocumentFragment();
         squares.forEach((cell) => fragment.appendChild(cell));
-        grid.appendChild(fragment);
+        grid.innerHTML = ""; // Réinitialiser la grille
+        grid.appendChild(fragment); // Réinsérer les cellules
       }
     }
   }
