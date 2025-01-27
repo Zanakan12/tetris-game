@@ -8,21 +8,17 @@ body {
 
 #grid {
     display: grid;
-    grid-template-columns: repeat(10, 30px);
-    grid-template-rows: repeat(20, 30px);
-    gap: 1px;
+    grid-template-columns: repeat(10, 30px); /* 10 colonnes */
+    grid-template-rows: repeat(20, 30px);  /* 20 lignes */
+    gap: 1.5px;                              /* Espace entre les cellules */
     margin: 20px auto;
     background-color: #222;
-    width: 302px;
-    border: 2px solid #fff;
+    width: 315px;                          /* Largeur ajustée : 300px + 2px de bordure */
+    border: 2px solid #bb2424;                /* Bordure blanche */
 }
 
 #grid div {
-    width: 30px;
-    height: 30px;
-    background-color: #333;
-}
-
-#score-container {
-    margin-top: 10px;
+    width: 30px;                           /* Largeur des cellules */
+    height: 30px;                          /* Hauteur des cellules */
+    background-color: #333;                /* Couleur de fond des cellules */
 }
