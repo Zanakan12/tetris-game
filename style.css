@@ -18,7 +18,11 @@ body {
 }
 
 #grid div {
+    display: flex;                         /* Active le système de mise en page flexible */
+    justify-content: center;               /* Centre horizontalement le contenu */
+    align-items: center;                   /* Centre verticalement le contenu */
     width: 30px;                           /* Largeur des cellules */
     height: 30px;                          /* Hauteur des cellules */
-    background-color: #333;                /* Couleur de fond des cellules */
+    background-color: #333;        
+    font-size: 30px;          /* Couleur de fond des cellules */
 }
