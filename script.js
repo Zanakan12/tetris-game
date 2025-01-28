@@ -1,6 +1,13 @@
 // Code complet pour un jeu Tetris affichant les lettres sur la grille
 document.addEventListener("DOMContentLoaded", () => {
   const grid = document.querySelector("#grid");
+  let score = 0;
+  let bestScore = 0;
+  const scoreDisplay = document.querySelector("#score");
+  const bestScoreDisplay = document.querySelector("#best-score");
+  let lastTime = 0; // Dernière fois que la fonction a été appelée
+  const dropInterval = 1000; // Intervalle de descente (en ms)
+  let lastDropTime = 0; // Dernier moment où un bloc est descendu
 
   // Création de la grille (10x20 + 10 cellules invisibles pour les collisions)
   for (let i = 0; i < 200; i++) {
@@ -14,7 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const squares = Array.from(document.querySelectorAll("#grid div"));
-  console.log(squares);
   const width = 10;
 
   // Définition des Tetrominos personnalisés (lettres)
@@ -200,12 +206,13 @@ document.addEventListener("DOMContentLoaded", () => {
   resetButton.addEventListener("click", resetGrid);
 
   function resetGrid() {
+    isPaused = true;
     for (let i = 0; i < 200; i++) {
       squares[i].classList.remove("block", "taken", ...letters);
       squares[i].textContent = "";
     }
-    isPaused = false;
-    pauseButton.textContent = "Pause";
+    
+    pauseButton.textContent = "Play";
     resetButton.style.display = "";
     startNewTetromino();
   }
@@ -224,6 +231,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Réinitialiser la grille après un court délai
       resetGrid();
+      bestScoreDisplay.textContent = `score: ${bestScore=score}`;
+      scoreDisplay.textContent = `Best score: ${score=0}`;
       pauseButton.textContent = "restart";
       resetButton.style.display = "none";
       isPaused = !isPaused;
@@ -254,6 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
   
         // Faire tomber les blocs détachés
+        scoreDisplay.textContent = `score: ${score += 10}`;
         dropFloatingBricks();
       }
     }
@@ -312,8 +322,20 @@ document.addEventListener("DOMContentLoaded", () => {
   
     return !(isLeftSupported || isRightSupported);
   }
-  
+  function animate(time) {
+    if (!isPaused) {
+      const deltaTime = time - lastDropTime;
+
+      if (deltaTime > dropInterval) {
+        moveDown();
+        lastDropTime = time;
+      }
+    }
+
+    // Continuer l'animation
+    requestAnimationFrame(animate);
+  }
 
   // Déplacement automatique
-  setInterval(moveDown, 1000);
+  requestAnimationFrame(animate);
 });
