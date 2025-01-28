@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const squares = Array.from(document.querySelectorAll("#grid div"));
   const width = 10;
 
-  // Définition des Tetrominos personnalisés (lettres)
+   // Définition des Tetrominos personnalisés (lettres)
   const customTetrominoes = {
     J: [
       [1, width + 1, width * 2 + 1, 2],
