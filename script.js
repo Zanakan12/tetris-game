@@ -1,14 +1,36 @@
 // Code complet pour un jeu Tetris affichant les lettres sur la grille
 document.addEventListener("DOMContentLoaded", () => {
-  const grid = document.querySelector("#grid");
   let score = 0;
   let bestScore = 0;
+  let lastTime = 0; // Dernière fois que la fonction a été appelée
+  let lastDropTime = 0; // Dernier moment où un bloc est descendu
+  let isPaused = true; // État du jeu
+
+  const dropInterval = 1000; // Intervalle de descente (en ms)
+
+  // Afficher les données
+  const grid = document.querySelector("#grid");
   const scoreDisplay = document.querySelector("#score");
   const bestScoreDisplay = document.querySelector("#best-score");
-  let lastTime = 0; // Dernière fois que la fonction a été appelée
-  const dropInterval = 1000; // Intervalle de descente (en ms)
-  let lastDropTime = 0; // Dernier moment où un bloc est descendu
+  const rankDisplay = document.getElementById("rank");
 
+
+  
+
+  function fetchRank() {
+    rankDisplay.innerHTML = `
+    <table border="1">
+        <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>Score</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>Player 1</td>
+            <td>100</td>
+        </table>`;
+  }
   // Création de la grille (10x20 + 10 cellules invisibles pour les collisions)
   for (let i = 0; i < 200; i++) {
     const cell = document.createElement("div");
@@ -25,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Définition des Tetrominos personnalisés (lettres)
   const customTetrominoes = {
-    L: [
+    J: [
       [1, width + 1, width * 2 + 1, 2],
       [width, width + 1, width + 2, width * 2 + 2],
       [1, width + 1, width * 2 + 1, width * 2],
@@ -52,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const letters = Object.keys(customTetrominoes);
-  console.log("lettre:",letters,"::::");
+  console.log("lettre:", letters, "::::");
   let currentPosition = 4;
   let currentRotation = 0;
   let random = Math.floor(Math.random() * letters.length);
@@ -66,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
       square.classList.add("block", currentLetter); // Ajoute la classe de la lettre
       square.textContent = (() => {
         switch (currentLetter) {
-          case "L":
+          case "J":
             return "🟥";
           case "T":
             return "🟩";
@@ -85,13 +107,13 @@ document.addEventListener("DOMContentLoaded", () => {
   function undraw() {
     current.forEach((index) => {
       const position = currentPosition + index;
-      if (squares[position]) { // Vérifie si la cellule existe
+      if (squares[position]) {
+        // Vérifie si la cellule existe
         squares[position].classList.remove("block", currentLetter); // Supprime les classes
         squares[position].textContent = ""; // Supprime la lettre
       }
     });
   }
-  
 
   // Déplacement vers le bas
   function moveDown() {
@@ -105,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
       endGame();
     }
   }
-  
+
   // Gérer les collisions et geler les blocs
   function freeze() {
     if (
@@ -161,20 +183,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const nextRotation =
       (currentRotation + 1) % customTetrominoes[currentLetter].length;
     const next = customTetrominoes[currentLetter][nextRotation];
-  
+
     const isValidRotation = next.every(
       (index) =>
         squares[currentPosition + index] && // Vérifie que la cellule existe
         !squares[currentPosition + index].classList.contains("taken") // Vérifie qu'elle n'est pas prise
     );
-  
+
     if (isValidRotation) {
       currentRotation = nextRotation;
       current = next;
     }
     draw();
   }
-  
 
   // Lancer un nouveau Tetromino (lettre)
   function startNewTetromino() {
@@ -185,7 +206,6 @@ document.addEventListener("DOMContentLoaded", () => {
     draw();
   }
 
-  let isPaused = false;
   const pauseButton = document.getElementById("pause-btn");
 
   pauseButton.addEventListener("click", () => {
@@ -211,7 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
       squares[i].classList.remove("block", "taken", ...letters);
       squares[i].textContent = "";
     }
-    
+
     pauseButton.textContent = "Play";
     resetButton.style.display = "";
     startNewTetromino();
@@ -231,8 +251,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Réinitialiser la grille après un court délai
       resetGrid();
-      bestScoreDisplay.textContent = `score: ${bestScore=score}`;
-      scoreDisplay.textContent = `Best score: ${score=0}`;
+      bestScoreDisplay.textContent = `Best score: ${(bestScore = score)}`;
+      scoreDisplay.textContent = `score: ${(score = 0)}`;
       pauseButton.textContent = "restart";
       resetButton.style.display = "none";
       isPaused = !isPaused;
@@ -242,7 +262,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function removeLine() {
     for (let i = 0; i < 199; i += width) {
       const row = Array.from({ length: width }, (_, j) => i + j);
-  
+
       // Vérifier si toute la ligne est prise
       if (row.every((index) => squares[index]?.classList.contains("taken"))) {
         // Supprimer la ligne (effacer classes et contenu)
@@ -250,31 +270,35 @@ document.addEventListener("DOMContentLoaded", () => {
           squares[index].classList.remove("taken", "block", ...letters);
           squares[index].textContent = "";
         });
-  
+
         // Faire descendre toutes les lignes au-dessus
         for (let j = i - 1; j >= 0; j--) {
           if (squares[j].classList.contains("taken")) {
-            squares[j + width].classList.add("taken", ...Array.from(squares[j].classList));
+            squares[j + width].classList.add(
+              "taken",
+              ...Array.from(squares[j].classList)
+            );
             squares[j + width].textContent = squares[j].textContent;
-  
+
             squares[j].classList.remove("taken", "block", ...letters);
             squares[j].textContent = "";
           }
         }
-  
+
         // Faire tomber les blocs détachés
-        scoreDisplay.textContent = `score: ${score += 10}`;
+        scoreDisplay.textContent = `score: ${(score += 10)}`;
         dropFloatingBricks();
       }
     }
   }
-  
+
   function dropFloatingBricks() {
     // Parcourir la grille de bas en haut, colonne par colonne
-    for (let y = 18; y >= 0; y--) { // Ignorer la dernière ligne
+    for (let y = 18; y >= 0; y--) {
+      // Ignorer la dernière ligne
       for (let x = 0; x < width; x++) {
         const index = y * width + x;
-  
+
         // Vérifier si un bloc est flottant
         if (
           squares[index].classList.contains("taken") &&
@@ -282,14 +306,14 @@ document.addEventListener("DOMContentLoaded", () => {
         ) {
           // Vérifier si le bloc est vraiment flottant
           const isFloating = isBlockFloating(index);
-  
+
           if (isFloating) {
             // Faire tomber le bloc
             squares[index + width].classList.add(
               ...Array.from(squares[index].classList)
             );
             squares[index + width].textContent = squares[index].textContent;
-  
+
             // Vider la cellule d'origine
             squares[index].classList.remove("taken", "block", ...letters);
             squares[index].textContent = "";
@@ -298,28 +322,28 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   }
-  
+
   // Fonction pour vérifier si un bloc est flottant
   function isBlockFloating(index) {
     // Vérifie uniquement les blocs dans la grille
     if (index >= 190) return false; // Les blocs sur la dernière ligne ne tombent pas
-  
+
     // Vérifier les blocs en dessous
     if (squares[index + width]?.classList.contains("taken")) {
       return false; // Bloc soutenu par une cellule en dessous
     }
-  
+
     // Vérifier les blocs adjacents (gauche et droite)
     const isLeftSupported =
       index % width > 0 && // Pas à l'extrémité gauche
       squares[index - 1]?.classList.contains("taken") &&
       squares[index - 1 + width]?.classList.contains("taken");
-  
+
     const isRightSupported =
       index % width < width - 1 && // Pas à l'extrémité droite
       squares[index + 1]?.classList.contains("taken") &&
       squares[index + 1 + width]?.classList.contains("taken");
-  
+
     return !(isLeftSupported || isRightSupported);
   }
   function animate(time) {
