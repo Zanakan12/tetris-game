@@ -4,9 +4,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let bestScore = 0;
   let lastTime = 0; // Dernière fois que la fonction a été appelée
   let lastDropTime = 0; // Dernier moment où un bloc est descendu
-  let isPaused = false; // État du jeu
+  let isPaused = true; // État du jeu
 
-  const dropInterval = 1000; // Intervalle de descente (en ms)
+  const dropInterval = 700; // Intervalle de descente (en ms)
 
   // Afficher les données
   const grid = document.querySelector("#grid");
@@ -14,20 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const bestScoreDisplay = document.querySelector("#best-score");
   const rankDisplay = document.getElementById("rank");
 
-  function fetchRank() {
-    rankDisplay.innerHTML = `
-    <table border="1">
-        <tr>
-            <th>Rank</th>
-            <th>Player</th>
-            <th>Score</th>
-        </tr>
-        <tr>
-            <td>1</td>
-            <td>Player 1</td>
-            <td>100</td>
-        </table>`;
-  }
   // Création de la grille (10x20 + 10 cellules invisibles pour les collisions)
   for (let i = 0; i < 200; i++) {
     const cell = document.createElement("div");
@@ -69,22 +55,22 @@ document.addEventListener("DOMContentLoaded", () => {
       [0, 1, width, width + 1],
     ],
     L: [
-      [10 + 1, 10 * 2 + 1, 10 * 2 + 2, 1],
-      [10 + 1, 10 + 2, 10, 2],
-      [1, 0, 10 * 2 + 1, 10 + 1],
-      [1, 0, 10, 2],
+      [width + 1, width * 2 + 1, width * 2 + 2, 1],
+      [width + 1, width + 2, width, 2],
+      [1, 0, width * 2 + 1, width + 1],
+      [1, 0, width, 2],
     ],
     Z: [
-      [0,1,10+1,10+2],
-      [10 + 1, 1, 10, 10 * 2],
-      [0,1,10+1,10+2],
-      [10 + 1, 1, 10, 10 * 2],
+      [0, 1, width + 1, width + 2],
+      [width + 1, 1, width, width * 2],
+      [0, 1, width + 1, width + 2],
+      [width + 1, 1, width, width * 2],
     ],
     S: [
-      [1, 2, 10, 10+1],
-      [1, 10+1, 10+2, 10*2+2],
-      [1, 2, 10, 10+1],
-      [1, 10+1, 10+2, 10*2+2],
+      [1, 2, width, width + 1],
+      [1, width + 1, width + 2, width * 2 + 2],
+      [1, 2, width, width + 1],
+      [1, width + 1, width + 2, width * 2 + 2],
     ],
   };
 
@@ -99,9 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function draw() {
     current.forEach((index) => {
       const square = squares[currentPosition + index];
-      console.log("square:", square);
       square.classList.add("block", currentLetter); // Ajoute la classe de la lettre
-      console.log(square.classList);
       square.textContent = (() => {
         switch (currentLetter) {
           case "J":
@@ -117,9 +101,9 @@ document.addEventListener("DOMContentLoaded", () => {
           case "Z":
             return "🟦";
           case "S":
-            return"🟫";
+            return "🟫";
           default:
-            return
+            return;
         }
       })();
     });
@@ -137,21 +121,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function wait(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
   // Déplacement vers le bas
-  function moveDown() {
+  async function moveDown() {
     if (!isPaused) {
       undraw();
       if (current.every((index) => squares[currentPosition + index + width])) {
         currentPosition += width;
       }
       draw();
+      await wait(3000);
       freeze();
       endGame();
     }
   }
 
   // Gérer les collisions et geler les blocs
-  function freeze() {
+  async function freeze() {
     if (
       current.some((index) =>
         squares[currentPosition + index + width].classList.contains("taken")
