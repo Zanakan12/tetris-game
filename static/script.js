@@ -12,16 +12,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const grid = document.querySelector("#grid");
   const scoreDisplay = document.querySelector("#score");
   const bestScoreDisplay = document.querySelector("#best-score");
-  const rankDisplay = document.getElementById("rank");
+  // const rankDisplay = document.getElementById("rank");
 
   // Création de la grille (10x20 + 10 cellules invisibles pour les collisions)
   for (let i = 0; i < 200; i++) {
     const cell = document.createElement("div");
     grid.appendChild(cell);
   }
+
+  // Ajouter une classe spéciale aux 10 dernières cellules pour le style
   for (let i = 0; i < 10; i++) {
     const cell = document.createElement("div");
-    cell.classList.add("taken");
+    cell.classList.add("taken", "bottom-line"); // Ajoute une nouvelle classe "bottom-line"
     grid.appendChild(cell);
   }
 
@@ -56,9 +58,9 @@ document.addEventListener("DOMContentLoaded", () => {
     ],
     L: [
       [width + 1, width * 2 + 1, width * 2 + 2, 1],
-      [width + 1, width + 2, width, 2],
-      [1, 0, width * 2 + 1, width + 1],
       [1, 0, width, 2],
+      [1, 0, width * 2 + 1, width + 1],
+      [width + 1, width + 2, width, 2],
     ],
     Z: [
       [0, 1, width + 1, width + 2],
@@ -132,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
         currentPosition += width;
       }
       draw();
-      await wait(3000);
+      //await wait(3000);
       freeze();
       endGame();
     }
@@ -142,11 +144,11 @@ document.addEventListener("DOMContentLoaded", () => {
   async function freeze() {
     if (
       current.some((index) =>
-        squares[currentPosition + index + width].classList.contains("taken")
+        squares[currentPosition + index + width]?.classList.contains("taken")
       )
     ) {
       current.forEach((index) =>
-        squares[currentPosition + index].classList.add("taken")
+        squares[currentPosition + index]?.classList.add("taken")
       );
       removeLine();
       startNewTetromino();
@@ -270,7 +272,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function removeLine() {
-    for (let i = 0; i < 199; i += width) {
+    for (let i = 0; i < 200; i += width) {
       const row = Array.from({ length: width }, (_, j) => i + j);
 
       // Vérifier si toute la ligne est prise

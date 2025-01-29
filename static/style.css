@@ -26,3 +26,7 @@ body {
     background-color: #333;        
     font-size: 30px;          /* Couleur de fond des cellules */
 }
+.bottom-line {
+    background-color: #ff0000 !important; /* Rouge vif */
+    border-top: 3px solid yellow !important;/* Bordure jaune */
+}
