@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let bestScore = 0;
   let lastTime = 0; // Dernière fois que la fonction a été appelée
   let lastDropTime = 0; // Dernier moment où un bloc est descendu
-  let isPaused = true; // État du jeu
+  let isPaused =false; // État du jeu
 
   const dropInterval = 1000; // Intervalle de descente (en ms)
 
@@ -13,9 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const scoreDisplay = document.querySelector("#score");
   const bestScoreDisplay = document.querySelector("#best-score");
   const rankDisplay = document.getElementById("rank");
-
-
-  
 
   function fetchRank() {
     rankDisplay.innerHTML = `
@@ -45,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const squares = Array.from(document.querySelectorAll("#grid div"));
   const width = 10;
 
-   // Définition des Tetrominos personnalisés (lettres)
+  // Définition des Tetrominos personnalisés (lettres)
   const customTetrominoes = {
     J: [
       [1, width + 1, width * 2 + 1, 2],
@@ -71,21 +68,28 @@ document.addEventListener("DOMContentLoaded", () => {
       [0, 1, width, width + 1],
       [0, 1, width, width + 1],
     ],
+    L: [
+      [10+1, 10*2+1, 10*2+2,1],
+      [10+1,10+2,10,2],
+      [1,0, 10*2+1, 10+1],
+      [1,0,10,2],
+    ],
   };
 
   const letters = Object.keys(customTetrominoes);
-  console.log("lettre:", letters, "::::");
-  let currentPosition = 4;
+  let currentPosition = 3;
   let currentRotation = 0;
   let random = Math.floor(Math.random() * letters.length);
-  let currentLetter = letters[random];
-  let current = customTetrominoes[currentLetter][currentRotation];
+  let currentLetter = letters[4];
+  let current = customTetrominoes[currentLetter][3];
 
   // Dessiner le Tetromino (lettre)
   function draw() {
     current.forEach((index) => {
       const square = squares[currentPosition + index];
+      console.log("square:", square);
       square.classList.add("block", currentLetter); // Ajoute la classe de la lettre
+      console.log(square.classList);
       square.textContent = (() => {
         switch (currentLetter) {
           case "J":
@@ -97,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
           case "O":
             return "🟨";
           default:
-            return ""; // Option par défaut si aucune correspondance
+            return "L"; // Option par défaut si aucune correspondance
         }
       })();
     });
@@ -200,8 +204,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Lancer un nouveau Tetromino (lettre)
   function startNewTetromino() {
     random = Math.floor(Math.random() * letters.length);
-    currentLetter = letters[random];
-    current = customTetrominoes[currentLetter][currentRotation];
+    currentLetter = letters[4];
+    current = customTetrominoes[currentLetter][2];
     currentPosition = 4;
     draw();
   }
