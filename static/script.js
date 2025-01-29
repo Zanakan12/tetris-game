@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let bestScore = 0;
   let lastTime = 0; // Dernière fois que la fonction a été appelée
   let lastDropTime = 0; // Dernier moment où un bloc est descendu
-  let isPaused =false; // État du jeu
+  let isPaused = false; // État du jeu
 
   const dropInterval = 1000; // Intervalle de descente (en ms)
 
@@ -69,19 +69,31 @@ document.addEventListener("DOMContentLoaded", () => {
       [0, 1, width, width + 1],
     ],
     L: [
-      [10+1, 10*2+1, 10*2+2,1],
-      [10+1,10+2,10,2],
-      [1,0, 10*2+1, 10+1],
-      [1,0,10,2],
+      [10 + 1, 10 * 2 + 1, 10 * 2 + 2, 1],
+      [10 + 1, 10 + 2, 10, 2],
+      [1, 0, 10 * 2 + 1, 10 + 1],
+      [1, 0, 10, 2],
+    ],
+    Z: [
+      [0,1,10+1,10+2],
+      [10 + 1, 1, 10, 10 * 2],
+      [0,1,10+1,10+2],
+      [10 + 1, 1, 10, 10 * 2],
+    ],
+    S: [
+      [1, 2, 10, 10+1],
+      [1, 10+1, 10+2, 10*2+2],
+      [1, 2, 10, 10+1],
+      [1, 10+1, 10+2, 10*2+2],
     ],
   };
 
   const letters = Object.keys(customTetrominoes);
-  let currentPosition = 3;
+  let currentPosition = 4;
   let currentRotation = 0;
   let random = Math.floor(Math.random() * letters.length);
-  let currentLetter = letters[4];
-  let current = customTetrominoes[currentLetter][3];
+  let currentLetter = letters[random];
+  let current = customTetrominoes[currentLetter][currentRotation];
 
   // Dessiner le Tetromino (lettre)
   function draw() {
@@ -100,8 +112,14 @@ document.addEventListener("DOMContentLoaded", () => {
             return "🟪";
           case "O":
             return "🟨";
+          case "L":
+            return "🟧";
+          case "Z":
+            return "🟦";
+          case "S":
+            return"🟫";
           default:
-            return "L"; // Option par défaut si aucune correspondance
+            return
         }
       })();
     });
@@ -204,8 +222,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Lancer un nouveau Tetromino (lettre)
   function startNewTetromino() {
     random = Math.floor(Math.random() * letters.length);
-    currentLetter = letters[4];
-    current = customTetrominoes[currentLetter][2];
+    currentLetter = letters[random];
+    current = customTetrominoes[currentLetter][currentRotation];
     currentPosition = 4;
     draw();
   }
