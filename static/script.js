@@ -7,8 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let lastTime = 0; // Dernière fois que la fonction a été appelée
   let lastDropTime = 0; // Dernier moment où un bloc est descendu
   let isPaused = true; // État du jeu
-
-  const dropInterval = 700; // Intervalle de descente (en ms)
+  let dropInterval = 700; // Intervalle de descente (en ms)
 
   // Afficher les données
   const grid = document.querySelector("#grid");
@@ -130,6 +129,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Déplacement vers le bas
   async function moveDown() {
     if (!isPaused) {
+      if (timer.includes(":15") || timer.includes(":30")) {
+        dropInterval -= 100;
+      }
       undraw();
       if (current.every((index) => squares[currentPosition + index + width])) {
         currentPosition += width;
@@ -200,7 +202,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const isValidRotation = next.every(
       (index) =>
         squares[currentPosition + index] && // Vérifie que la cellule existe
-        !squares[currentPosition + index].classList.contains("taken") // Vérifie qu'elle n'est pas prise
+        !squares[currentPosition + index].classList.contains("taken") ||
+        current.some((index) => (currentPosition + index) % width === width - 1) // Vérifie qu'elle n'est pas prise
     );
 
     if (isValidRotation) {
@@ -267,11 +270,12 @@ document.addEventListener("DOMContentLoaded", () => {
       pauseTimer();
       console.log(timerDisplay.textContent.slice(6));
       if (playerName) {
-        submitScore(playerName, score,timer); // Temps par défaut (à adapter)
+        submitScore(playerName, score, timer); // Temps par défaut (à adapter)
       }
       // Réinitialiser le jeu
       resetGrid();
       resetTimer();
+      dropInterval = 700;
       scoreDisplay.textContent = `Score: ${(score = 0)}`;
       isPaused = true;
     }
