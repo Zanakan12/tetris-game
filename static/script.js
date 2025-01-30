@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Afficher les données
   const grid = document.querySelector("#grid");
   const scoreDisplay = document.querySelector("#score");
-  const bestScoreDisplay = document.querySelector("#best-score");
   // const rankDisplay = document.getElementById("rank");
 
   // Création de la grille (10x20 + 10 cellules invisibles pour les collisions)
@@ -224,6 +223,8 @@ document.addEventListener("DOMContentLoaded", () => {
   pauseButton.addEventListener("click", () => {
     isPaused = !isPaused;
     pauseButton.textContent = isPaused ? "Play" : "Pause";
+    isPaused ? pauseTimer() : startTimer();
+
   });
 
   // Contrôles clavier
@@ -236,7 +237,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   const resetButton = document.getElementById("reset-btn");
-  resetButton.addEventListener("click", resetGrid);
+  resetButton.addEventListener("click",() =>{
+    resetTimer();
+    resetGrid();
+  } );
 
   function resetGrid() {
     isPaused = true;
@@ -265,7 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       // Réinitialiser le jeu
       resetGrid();
-      bestScoreDisplay.textContent = `Best score: ${(bestScore = score)}`;
+      resetTimer();
       scoreDisplay.textContent = `score: ${(score = 0)}`;
       pauseButton.textContent = "Restart";
       resetButton.style.display = "none";
@@ -461,3 +465,34 @@ async function fetchScores(page) {
     });
   }
 /*-------------------------------------------------------------------------*/
+let totalSeconds = 0;
+let timerInterval = null;
+const timerDisplay = document.getElementById("timer");
+
+function updateTimer() {
+  let minutes = Math.floor(totalSeconds / 60);
+  let seconds = totalSeconds % 60;
+  timerDisplay.textContent = `Time : ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  totalSeconds++;
+}
+
+// Démarrer le timer
+function startTimer() {
+  if (!timerInterval) {
+    timerInterval = setInterval(updateTimer, 1000);
+  }
+}
+
+// Mettre en pause
+function pauseTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+// Réinitialiser
+function resetTimer() {
+  console.log("here")
+  pauseTimer();
+  totalSeconds = 0;
+  timerDisplay.textContent = "Time : 0:00";
+}
