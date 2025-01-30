@@ -1,5 +1,6 @@
 // Code complet pour un jeu Tetris affichant les lettres sur la grille
 const apiBaseUrl = "http://localhost:8080/api/scores";
+let timer = "";
 document.addEventListener("DOMContentLoaded", () => {
   let score = 0;
   let bestScore = 0;
@@ -222,9 +223,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   pauseButton.addEventListener("click", () => {
     isPaused = !isPaused;
-    pauseButton.textContent = isPaused ? "Play" : "Pause";
+    pauseButton.textContent = isPaused ? "▶︎" : "⏸︎";
     isPaused ? pauseTimer() : startTimer();
-
   });
 
   // Contrôles clavier
@@ -237,10 +237,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   const resetButton = document.getElementById("reset-btn");
-  resetButton.addEventListener("click",() =>{
+  resetButton.addEventListener("click", () => {
     resetTimer();
     resetGrid();
-  } );
+  });
 
   function resetGrid() {
     isPaused = true;
@@ -249,7 +249,7 @@ document.addEventListener("DOMContentLoaded", () => {
       squares[i].textContent = "";
     }
 
-    pauseButton.textContent = "Play";
+    pauseButton.textContent = "▶︎";
     resetButton.style.display = "";
     startNewTetromino();
   }
@@ -264,15 +264,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const playerName = prompt(
         "Entrez votre nom pour sauvegarder votre score :"
       );
+      pauseTimer();
+      console.log(timerDisplay.textContent.slice(6));
       if (playerName) {
-        submitScore(playerName, score, ); // Temps par défaut (à adapter)
+        submitScore(playerName, score,timer); // Temps par défaut (à adapter)
       }
       // Réinitialiser le jeu
       resetGrid();
       resetTimer();
-      scoreDisplay.textContent = `score: ${(score = 0)}`;
-      pauseButton.textContent = "Restart";
-      resetButton.style.display = "none";
+      scoreDisplay.textContent = `Score: ${(score = 0)}`;
       isPaused = true;
     }
   }
@@ -383,20 +383,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 //-----------------------------------------------------------------------
 
- let currentPage = 1;
-  const limit = 5; 
-  const tableBody = document.getElementById("scoreTableBody");
+let currentPage = 1;
+const limit = 5;
+const tableBody = document.getElementById("scoreTableBody");
 
 document.addEventListener("DOMContentLoaded", function () {
- 
-
- 
   if (!tableBody) {
     console.error("⛔ ERREUR : `scoreTableBody` introuvable dans l'HTML !");
     return;
   }
 
- 
   // Gestion des boutons de pagination
   document.getElementById("prevPage").addEventListener("click", () => {
     if (currentPage > 1) {
@@ -443,27 +439,27 @@ async function fetchScores(page) {
     console.error("Erreur lors de la récupération des scores :", error);
   }
 }
- // Fonction pour afficher les scores
-  function displayScores(scores) {
-    tableBody.innerHTML = ""; // Vider le tableau avant d'ajouter de nouveaux scores
+// Fonction pour afficher les scores
+function displayScores(scores) {
+  tableBody.innerHTML = ""; // Vider le tableau avant d'ajouter de nouveaux scores
 
-    if (scores.length === 0) {
-      tableBody.innerHTML =
-        "<tr><td colspan='4'>Aucun score disponible</td></tr>";
-      return;
-    }
+  if (scores.length === 0) {
+    tableBody.innerHTML =
+      "<tr><td colspan='4'>Aucun score disponible</td></tr>";
+    return;
+  }
 
-    scores.forEach((score, index) => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
+  scores.forEach((score, index) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
               <td>${(currentPage - 1) * limit + index + 1}</td>
               <td>${score.name}</td>
               <td>${score.score}</td>
               <td>${score.time}</td>
           `;
-      tableBody.appendChild(row);
-    });
-  }
+    tableBody.appendChild(row);
+  });
+}
 /*-------------------------------------------------------------------------*/
 let totalSeconds = 0;
 let timerInterval = null;
@@ -472,8 +468,11 @@ const timerDisplay = document.getElementById("timer");
 function updateTimer() {
   let minutes = Math.floor(totalSeconds / 60);
   let seconds = totalSeconds % 60;
-  timerDisplay.textContent = `Time : ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  timerDisplay.textContent = `Time : ${minutes}:${
+    seconds < 10 ? "0" : ""
+  }${seconds}`;
   totalSeconds++;
+  timer = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
 }
 
 // Démarrer le timer
@@ -491,7 +490,6 @@ function pauseTimer() {
 
 // Réinitialiser
 function resetTimer() {
-  console.log("here")
   pauseTimer();
   totalSeconds = 0;
   timerDisplay.textContent = "Time : 0:00";
