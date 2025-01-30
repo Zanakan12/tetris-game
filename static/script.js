@@ -255,8 +255,6 @@ document.addEventListener("DOMContentLoaded", () => {
         squares[currentPosition + index].classList.contains("taken")
       )
     ) {
-      setTimeout(() => {
-        alert("Game Over! Merci d'avoir joué.");
 
         // Demander le nom du joueur et enregistrer son score
         const playerName = prompt(
@@ -265,7 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (playerName) {
           submitScore(playerName, score, "00:00"); // Temps par défaut (à adapter)
         }
-
+        console.log(playerName);
         // Réinitialiser le jeu
         resetGrid();
         bestScoreDisplay.textContent = `Best score: ${(bestScore = score)}`;
@@ -273,7 +271,7 @@ document.addEventListener("DOMContentLoaded", () => {
         pauseButton.textContent = "Restart";
         resetButton.style.display = "none";
         isPaused = true;
-      }, 100);
+      
     }
   }
 
@@ -303,7 +301,6 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }
 
-        // Faire tomber les blocs détachés
         scoreDisplay.textContent = `score: ${(score += 10)}`;
         dropFloatingBricks();
       }
