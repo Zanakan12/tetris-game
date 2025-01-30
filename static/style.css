@@ -13,8 +13,8 @@ body {
     gap: 1.5px;                              /* Espace entre les cellules */
     margin: 20px auto;
     background-color: #222;
-    width: 315px;                          /* Largeur ajustée : 300px + 2px de bordure */
-    border: 2px solid #bb2424;                /* Bordure blanche */
+    width: 314px;                          /* Largeur ajustée : 300px + 2px de bordure */
+    border: 3px solid #bb2424;                /* Bordure blanche */
 }
 
 #grid div {
@@ -26,7 +26,55 @@ body {
     background-color: #333;        
     font-size: 30px;          /* Couleur de fond des cellules */
 }
+@keyframes glow {
+    0% { box-shadow: 0 0 10px rgba(255, 69, 0, 0.8); }
+    50% { box-shadow: 0 0 30px rgba(255, 140, 0, 0.9); }
+    100% { box-shadow: 0 0 10px rgba(255, 69, 0, 0.8); }
+}
+
 .bottom-line {
-    background-color: #ff0000 !important; /* Rouge vif */
-    border-top: 3px solid yellow !important;/* Bordure jaune */
+    animation: fireAnimation 2s infinite linear, glow 1s infinite alternate ease-in-out;
+} 
+/* Aligner le tableau des scores à gauche */
+#scoreboard {
+    position: absolute; /* Positionnement absolu */
+    left: 20px; /* Distance depuis le bord gauche */
+    top: 100px; /* Distance depuis le haut */
+    width: 250px; /* Largeur fixe pour éviter qu'il soit trop large */
+    padding: 10px;
+    background: #f4f4f4;
+    border-radius: 8px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Style du tableau */
+#scoreboard table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#scoreboard th, #scoreboard td {
+    border: 1px solid #ddd;
+    padding: 6px;
+    text-align: center;
+}
+
+#scoreboard th {
+    background-color: #e0e0e0;
+}
+
+/* Boutons de pagination */
+#scoreboard button {
+    width: 100%;
+    margin-top: 5px;
+    padding: 5px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#scoreboard button:hover {
+    background-color: #0056b3;
 }

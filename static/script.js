@@ -250,24 +250,30 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function endGame() {
-    // Vérifier si un Tetromino touche le haut de la grille
     if (
       current.some((index) =>
         squares[currentPosition + index].classList.contains("taken")
       )
     ) {
-      // Afficher un message de fin de jeu
       setTimeout(() => {
-        alert("Game Over! Merci d'avoir joué."); // Afficher un message
-      }, 100);
+        alert("Game Over! Merci d'avoir joué.");
 
-      // Réinitialiser la grille après un court délai
-      resetGrid();
-      bestScoreDisplay.textContent = `Best score: ${(bestScore = score)}`;
-      scoreDisplay.textContent = `score: ${(score = 0)}`;
-      pauseButton.textContent = "restart";
-      resetButton.style.display = "none";
-      isPaused = !isPaused;
+        // Demander le nom du joueur et enregistrer son score
+        const playerName = prompt(
+          "Entrez votre nom pour sauvegarder votre score :"
+        );
+        if (playerName) {
+          submitScore(playerName, score, "00:00"); // Temps par défaut (à adapter)
+        }
+
+        // Réinitialiser le jeu
+        resetGrid();
+        bestScoreDisplay.textContent = `Best score: ${(bestScore = score)}`;
+        scoreDisplay.textContent = `score: ${(score = 0)}`;
+        pauseButton.textContent = "Restart";
+        resetButton.style.display = "none";
+        isPaused = true;
+      }, 100);
     }
   }
 
@@ -374,4 +380,67 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Déplacement automatique
   requestAnimationFrame(animate);
+});
+
+//-----------------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", function () {
+  const apiBaseUrl = "http://localhost:8080/api/scores";
+  let currentPage = 1;
+  const limit = 5;
+
+  const tableBody = document.getElementById("scoreTableBody");
+
+  if (!tableBody) {
+      console.error("⛔ ERREUR : `scoreTableBody` introuvable dans l'HTML !");
+      return;
+  }
+
+  // Fonction pour récupérer les scores
+  async function fetchScores(page) {
+      try {
+          const response = await fetch(`${apiBaseUrl}?page=${page}&limit=${limit}`);
+          const scores = await response.json();
+          console.log("📊 Scores récupérés :", scores);
+          displayScores(scores);
+      } catch (error) {
+          console.error("Erreur lors de la récupération des scores :", error);
+      }
+  }
+
+  // Fonction pour afficher les scores
+  function displayScores(scores) {
+      tableBody.innerHTML = ""; // Vider le tableau avant d'ajouter de nouveaux scores
+
+      if (scores.length === 0) {
+          tableBody.innerHTML = "<tr><td colspan='4'>Aucun score disponible</td></tr>";
+          return;
+      }
+
+      scores.forEach((score, index) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+              <td>${(currentPage - 1) * limit + index + 1}</td>
+              <td>${score.name}</td>
+              <td>${score.score}</td>
+              <td>${score.time}</td>
+          `;
+          tableBody.appendChild(row);
+      });
+  }
+
+  // Gestion des boutons de pagination
+  document.getElementById("prevPage").addEventListener("click", () => {
+      if (currentPage > 1) {
+          currentPage--;
+          fetchScores(currentPage);
+      }
+  });
+
+  document.getElementById("nextPage").addEventListener("click", () => {
+      currentPage++;
+      fetchScores(currentPage);
+  });
+
+  // Charger les scores initiaux
+  fetchScores(currentPage);
 });
