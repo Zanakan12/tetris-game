@@ -1,6 +1,9 @@
 // Code complet pour un jeu Tetris affichant les lettres sur la grille
 const apiBaseUrl = "http://localhost:8080/api/scores";
 let timer = "";
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 document.addEventListener("DOMContentLoaded", () => {
   let score = 0;
   let bestScore = 0;
@@ -123,15 +126,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function wait(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
+  
   // Déplacement vers le bas
   async function moveDown() {
     if (!isPaused) {
-      if (timer.includes(":15") || timer.includes(":30")) {
-        dropInterval -= 100;
-      }
       undraw();
       if (current.every((index) => squares[currentPosition + index + width])) {
         currentPosition += width;
@@ -201,8 +199,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const isValidRotation = next.every(
       (index) =>
-        squares[currentPosition + index] && // Vérifie que la cellule existe
-        !squares[currentPosition + index].classList.contains("taken") ||
+        (squares[currentPosition + index] && // Vérifie que la cellule existe
+          !squares[currentPosition + index].classList.contains("taken")) ||
         current.some((index) => (currentPosition + index) % width === width - 1) // Vérifie qu'elle n'est pas prise
     );
 
@@ -226,7 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   pauseButton.addEventListener("click", () => {
     isPaused = !isPaused;
-    pauseButton.textContent = isPaused ? "▶︎" : "⏸︎";
+    pauseButton.textContent = isPaused ? "⏯︎" : "⏸︎";
     isPaused ? pauseTimer() : startTimer();
   });
 
@@ -252,7 +250,7 @@ document.addEventListener("DOMContentLoaded", () => {
       squares[i].textContent = "";
     }
 
-    pauseButton.textContent = "▶︎";
+    pauseButton.textContent = "⏯︎";
     resetButton.style.display = "";
     startNewTetromino();
   }
@@ -268,7 +266,6 @@ document.addEventListener("DOMContentLoaded", () => {
         "Entrez votre nom pour sauvegarder votre score :"
       );
       pauseTimer();
-      console.log(timerDisplay.textContent.slice(6));
       if (playerName) {
         submitScore(playerName, score, timer); // Temps par défaut (à adapter)
       }
@@ -367,10 +364,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     return !(isLeftSupported || isRightSupported);
   }
-  function animate(time) {
+  async function animate(time) {
     if (!isPaused) {
       const deltaTime = time - lastDropTime;
-
+      if (timer.includes(":15") || timer.includes(":30")) {
+        await wait(1000);
+        dropInterval -= 100;
+      }
       if (deltaTime > dropInterval) {
         moveDown();
         lastDropTime = time;

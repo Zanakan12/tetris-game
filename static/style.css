@@ -94,3 +94,7 @@ body {
 #scoreboard button:hover {
     background-color: #0056b3;
 }
+
+#pause-btn, #reset-btn{
+    font-size: 30px;
+}
