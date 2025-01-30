@@ -40,11 +40,13 @@ body {
     position: absolute; /* Positionnement absolu */
     left: 20px; /* Distance depuis le bord gauche */
     top: 100px; /* Distance depuis le haut */
-    width: 250px; /* Largeur fixe pour éviter qu'il soit trop large */
+    width: 150px; /* Largeur fixe pour éviter qu'il soit trop large */
     padding: 10px;
-    background: #f4f4f4;
+    background: #5e3131;
     border-radius: 8px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    align-items: left !important;
+    
 }
 
 /* Style du tableau */
@@ -55,13 +57,26 @@ body {
 
 #scoreboard th, #scoreboard td {
     border: 1px solid #ddd;
-    padding: 6px;
+    padding: 1px;
     text-align: center;
 }
 
 #scoreboard th {
     background-color: #e0e0e0;
 }
+
+#scoreboard h2 {
+    text-align: center;
+    font-size: 15px;
+}
+#scoreboard tr {
+    font-size: 10px;
+}
+#pagination-buton, #pagination-buton td {
+    border: none !important;
+}
+
+
 
 /* Boutons de pagination */
 #scoreboard button {
@@ -73,6 +88,7 @@ body {
     color: white;
     cursor: pointer;
     border-radius: 4px;
+    font-size: 7px;
 }
 
 #scoreboard button:hover {

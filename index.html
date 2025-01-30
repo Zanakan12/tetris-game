@@ -20,28 +20,27 @@
 
     <!-- 🏆 Tableau des scores -->
     <div id="scoreboard">
-        <h2>Classement des scores</h2>
+        <h2>Scores rank</h2>
         <table>
             <thead>
                 <tr>
                     <th>Position</th>
-                    <th>Nom</th>
+                    <th>Name</th>
                     <th>Score</th>
-                    <th>Temps</th>
+                    <th>Time</th>
                 </tr>
             </thead>
             <tbody id="scoreTableBody">
                 <!-- Les scores seront ajoutés ici via script.js -->
             </tbody>
         </table>
-        <table>
+        <table id="pagination-buton">
             <td><button id="prevPage">← Prev</button></td>
             <td><button id="nextPage">Next →</button></td>
         </table>
-        
-        
+
     </div>
 
-    <script src="static/script.js"></script>
+    <script src="static/script.js" defer></script>
 </body>
 </html>
