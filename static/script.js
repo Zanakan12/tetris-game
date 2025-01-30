@@ -265,7 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "Entrez votre nom pour sauvegarder votre score :"
       );
       if (playerName) {
-        submitScore(playerName, score, "00:00"); // Temps par défaut (à adapter)
+        submitScore(playerName, score, ); // Temps par défaut (à adapter)
       }
       // Réinitialiser le jeu
       resetGrid();
