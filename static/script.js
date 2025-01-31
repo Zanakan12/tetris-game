@@ -6,8 +6,6 @@ function wait(ms) {
 }
 document.addEventListener("DOMContentLoaded", () => {
   let score = 0;
-  let bestScore = 0;
-  let lastTime = 0; // Dernière fois que la fonction a été appelée
   let lastDropTime = 0; // Dernier moment où un bloc est descendu
   let isPaused = true; // État du jeu
   let dropInterval = 700; // Intervalle de descente (en ms)
@@ -151,21 +149,39 @@ function draw() {
     endGame();
   }
   
-
+ let freezeDelay = false;
   // Gérer les collisions et geler les blocs
-  async function freeze() {
+  function freeze() {
     if (
       current.some((index) =>
         squares[currentPosition + index + width]?.classList.contains("taken")
       )
     ) {
-      current.forEach((index) =>
-        squares[currentPosition + index]?.classList.add("taken")
-      );
-      removeLine();
-      startNewTetromino();
+      if (!freezeDelay) {
+        freezeDelay = true; // Active le délai
+        console.log("⏳ Attente pour un dernier déplacement...");
+        
+        setTimeout(() => {
+          // Vérifier si le joueur a réussi à bouger la pièce
+          if (
+            current.some((index) =>
+              squares[currentPosition + index + width]?.classList.contains("taken")
+            )
+          ) {
+            console.log("🛑 Bloc figé !");
+            current.forEach((index) =>
+              squares[currentPosition + index]?.classList.add("taken")
+            );
+            removeLine();
+            startNewTetromino();
+          }
+          freezeDelay = false; // Réinitialise le délai
+        }, 300); // Attente de 200ms avant de figer
+        return;
+      }
     }
   }
+  
 
   function moveLeft() {
     undraw();
