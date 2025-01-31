@@ -87,9 +87,12 @@ document.addEventListener("DOMContentLoaded", () => {
   let current = customTetrominoes[currentLetter][currentRotation];
 
   // Dessiner le Tetromino (lettre)
-  function draw() {
-    current.forEach((index) => {
-      const square = squares[currentPosition + index];
+function draw() {
+  current.forEach((index) => {
+    const square = squares[currentPosition + index];
+
+    // Vérifier que la cellule n'est pas déjà prise
+    if (!square.classList.contains("taken")) {
       square.classList.add("block", currentLetter); // Ajoute la classe de la lettre
       square.textContent = (() => {
         switch (currentLetter) {
@@ -108,11 +111,13 @@ document.addEventListener("DOMContentLoaded", () => {
           case "S":
             return "🟫";
           default:
-            return;
+            return "";
         }
       })();
-    });
-  }
+    }
+  });
+}
+
 
   // Effacer le Tetromino (lettre)
   function undraw() {
@@ -128,18 +133,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   
   // Déplacement vers le bas
-  async function moveDown() {
-    if (!isPaused) {
-      undraw();
-      if (current.every((index) => squares[currentPosition + index + width])) {
-        currentPosition += width;
-      }
-      draw();
-      //await wait(3000);
-      freeze();
-      endGame();
+  function moveDown() {
+    undraw();
+    const newPosition = currentPosition + width;
+  
+    // Vérifier si le Tetromino va entrer dans une case "taken"
+    const isCollision = current.some((index) =>
+      squares[newPosition + index]?.classList.contains("taken")
+    );
+  
+    if (!isCollision) {
+      currentPosition = newPosition;
     }
+   
+    draw();
+    freeze();
+    endGame();
   }
+  
 
   // Gérer les collisions et geler les blocs
   async function freeze() {
@@ -156,43 +167,67 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Déplacer à gauche
   function moveLeft() {
     undraw();
     const isAtLeftEdge = current.some(
       (index) => (currentPosition + index) % width === 0
     );
-    if (!isAtLeftEdge) currentPosition -= 1;
-    if (
-      current.some((index) =>
-        squares[currentPosition + index].classList.contains("taken")
-      )
-    ) {
-      currentPosition += 1;
+  
+    if (!isAtLeftEdge) {
+      const newPosition = currentPosition - 1;
+      const isCollision = current.some((index) =>
+        squares[newPosition + index].classList.contains("taken")
+      );
+  
+      if (!isCollision) {
+        currentPosition = newPosition;
+      }
     }
+  
     draw();
+    
+    // Empêcher une descente immédiate après le mouvement
+    lastDropTime = performance.now();
   }
-
-  // Déplacer à droite
+  
   function moveRight() {
     undraw();
     const isAtRightEdge = current.some(
       (index) => (currentPosition + index) % width === width - 1
     );
-    if (!isAtRightEdge) currentPosition += 1;
-    if (
-      current.some((index) =>
-        squares[currentPosition + index].classList.contains("taken")
-      )
-    ) {
-      currentPosition -= 1;
+  
+    if (!isAtRightEdge) {
+      const newPosition = currentPosition + 1;
+      const isCollision = current.some((index) =>
+        squares[newPosition + index].classList.contains("taken")
+      );
+  
+      if (!isCollision) {
+        currentPosition = newPosition;
+      }
     }
+  
     draw();
+  
+    // Empêcher une descente immédiate après le mouvement
+    lastDropTime = performance.now();
   }
-
+  
+  
   // Faire pivoter le Tetromino
   function rotate() {
     undraw();
+    let right= 0;
+    let left=0;
+    current.forEach((index) => {
+      if ((currentPosition + index) % width === width - 1) {
+        right++
+      }else if ((currentPosition + index) % width ===0) {
+        left++
+      }
+    });
+    
+    //permettre un cycle infini de rotation sans if
     const nextRotation =
       (currentRotation + 1) % customTetrominoes[currentLetter].length;
     const next = customTetrominoes[currentLetter][nextRotation];
@@ -200,15 +235,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const isValidRotation = next.every(
       (index) =>
         (squares[currentPosition + index] && // Vérifie que la cellule existe
-          !squares[currentPosition + index].classList.contains("taken")) ||
-        current.some((index) => (currentPosition + index) % width === width - 1) // Vérifie qu'elle n'est pas prise
-    );
-
+          !squares[currentPosition + index].classList.contains("taken")) // Vérifie qu'elle n'est pas prise
+    ); 
+    
     if (isValidRotation) {
       currentRotation = nextRotation;
       current = next;
     }
+    
+    if(right>2)currentPosition =currentPosition-(right-2);
+    else if((currentPosition+3)%width===0&&currentLetter==="I")currentPosition-=1;
+    else if(right>1&&currentLetter==="Z")currentPosition-=1;
+    else if (currentLetter==="S"&&(left>1))currentPosition+=1;
+    else if (currentLetter==="I"&&(left>1))currentPosition+=1;
+    else if (left>1)currentPosition+=1
     draw();
+    
   }
 
   // Lancer un nouveau Tetromino (lettre)
@@ -239,6 +281,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const resetButton = document.getElementById("reset-btn");
   resetButton.addEventListener("click", () => {
+    dropInterval =700
     resetTimer();
     resetGrid();
   });
