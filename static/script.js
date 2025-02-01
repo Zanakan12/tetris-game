@@ -84,38 +84,50 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentLetter = letters[random];
   let current = customTetrominoes[currentLetter][currentRotation];
 
-  // Dessiner le Tetromino (lettre)
-function draw() {
-  current.forEach((index) => {
-    const square = squares[currentPosition + index];
-
-    // Vérifier que la cellule n'est pas déjà prise
-    if (!square.classList.contains("taken")) {
-      square.classList.add("block", currentLetter); // Ajoute la classe de la lettre
-      square.textContent = (() => {
-        switch (currentLetter) {
-          case "J":
-            return "🟥";
-          case "T":
-            return "🟩";
-          case "I":
-            return "🟪";
-          case "O":
-            return "🟨";
-          case "L":
-            return "🟧";
-          case "Z":
-            return "🟦";
-          case "S":
-            return "🟫";
-          default:
-            return "";
-        }
-      })();
+  function getTetrominoSymbol(letter) {
+    switch (letter) {
+      case "J":
+        return "🟥";
+      case "T":
+        return "🟩";
+      case "I":
+        return "🟪";
+      case "O":
+        return "🟨";
+      case "L":
+        return "🟧";
+      case "Z":
+        return "🟦";
+      case "S":
+        return "🟫";
+      default:
+        return "";
     }
-  });
-}
+  }
+  let nextPieces = [];
+  for (let i = 0; i < 3; i++) {
+    nextPieces.push(letters[Math.floor(Math.random() * letters.length)]);
+  }
 
+  function updateNextPieces() {
+    for (let i = 0; i < 3; i++) {
+      const nextPieceDiv = document.getElementById(`next-piece-${i + 1}`);
+      nextPieceDiv.textContent = nextPieces[i];
+    }
+  }
+  updateNextPieces();
+  // Dessiner le Tetromino (lettre)
+  function draw() {
+    current.forEach((index) => {
+      const square = squares[currentPosition + index];
+
+      // Vérifier que la cellule n'est pas déjà prise
+      if (!square.classList.contains("taken")) {
+        square.classList.add("block", currentLetter); // Ajoute la classe de la lettre
+        square.textContent = getTetrominoSymbol(currentLetter);
+      }
+    });
+  }
 
   // Effacer le Tetromino (lettre)
   function undraw() {
@@ -129,27 +141,26 @@ function draw() {
     });
   }
 
-  
   // Déplacement vers le bas
   function moveDown() {
     undraw();
     const newPosition = currentPosition + width;
-  
+
     // Vérifier si le Tetromino va entrer dans une case "taken"
     const isCollision = current.some((index) =>
       squares[newPosition + index]?.classList.contains("taken")
     );
-  
+
     if (!isCollision) {
       currentPosition = newPosition;
     }
-   
+
     draw();
     freeze();
     endGame();
   }
-  
- let freezeDelay = false;
+
+  let freezeDelay = false;
   // Gérer les collisions et geler les blocs
   function freeze() {
     if (
@@ -158,14 +169,17 @@ function draw() {
       )
     ) {
       if (!freezeDelay) {
+        controlSound("collision")
         freezeDelay = true; // Active le délai
         console.log("⏳ Attente pour un dernier déplacement...");
-        
+
         setTimeout(() => {
           // Vérifier si le joueur a réussi à bouger la pièce
           if (
             current.some((index) =>
-              squares[currentPosition + index + width]?.classList.contains("taken")
+              squares[currentPosition + index + width]?.classList.contains(
+                "taken"
+              )
             )
           ) {
             console.log("🛑 Bloc figé !");
@@ -181,68 +195,66 @@ function draw() {
       }
     }
   }
-  
 
   function moveLeft() {
     undraw();
     const isAtLeftEdge = current.some(
       (index) => (currentPosition + index) % width === 0
     );
-  
+
     if (!isAtLeftEdge) {
       const newPosition = currentPosition - 1;
       const isCollision = current.some((index) =>
         squares[newPosition + index].classList.contains("taken")
       );
-  
+
       if (!isCollision) {
         currentPosition = newPosition;
       }
     }
-  
+
     draw();
-    
+
     // Empêcher une descente immédiate après le mouvement
     lastDropTime = performance.now();
   }
-  
+
   function moveRight() {
     undraw();
     const isAtRightEdge = current.some(
       (index) => (currentPosition + index) % width === width - 1
     );
-  
+
     if (!isAtRightEdge) {
       const newPosition = currentPosition + 1;
       const isCollision = current.some((index) =>
         squares[newPosition + index].classList.contains("taken")
       );
-  
+
       if (!isCollision) {
         currentPosition = newPosition;
       }
     }
-  
+
     draw();
-  
+
     // Empêcher une descente immédiate après le mouvement
     lastDropTime = performance.now();
   }
-  
-  
+
   // Faire pivoter le Tetromino
   function rotate() {
     undraw();
-    let right= 0;
-    let left=0;
+    let right = 0;
+    let left = 0;
     current.forEach((index) => {
       if ((currentPosition + index) % width === width - 1) {
-        right++
-      }else if ((currentPosition + index) % width ===0) {
-        left++
+        right++;
+      } else if ((currentPosition + index) % width === 0) {
+        left++;
       }
     });
-    
+
     //permettre un cycle infini de rotation sans if
     const nextRotation =
       (currentRotation + 1) % customTetrominoes[currentLetter].length;
@@ -250,31 +262,35 @@ function draw() {
 
     const isValidRotation = next.every(
       (index) =>
-        (squares[currentPosition + index] && // Vérifie que la cellule existe
-          !squares[currentPosition + index].classList.contains("taken")) // Vérifie qu'elle n'est pas prise
-    ); 
-    
+        squares[currentPosition + index] && // Vérifie que la cellule existe
+        !squares[currentPosition + index].classList.contains("taken") // Vérifie qu'elle n'est pas prise
+    );
+
     if (isValidRotation) {
       currentRotation = nextRotation;
       current = next;
     }
-    
-    if(right>2)currentPosition =currentPosition-(right-2);
-    else if((currentPosition+3)%width===0&&currentLetter==="I")currentPosition-=1;
-    else if(right>1&&currentLetter==="Z")currentPosition-=1;
-    else if (currentLetter==="S"&&(left>1))currentPosition+=1;
-    else if (currentLetter==="I"&&(left>1))currentPosition+=1;
-    else if (left>1)currentPosition+=1
+
+    if (right > 2) currentPosition = currentPosition - (right - 2);
+    else if ((currentPosition + 3) % width === 0 && currentLetter === "I")
+      currentPosition -= 1;
+    else if (right > 1 && currentLetter === "Z") currentPosition -= 1;
+    else if (currentLetter === "S" && left > 1) currentPosition += 1;
+    else if (currentLetter === "I" && left > 1) currentPosition += 1;
+    else if (left > 1) currentPosition += 1;
     draw();
-    
   }
 
   // Lancer un nouveau Tetromino (lettre)
   function startNewTetromino() {
-    random = Math.floor(Math.random() * letters.length);
-    currentLetter = letters[random];
+    currentLetter = nextPieces.shift(); // Prendre le premier de la liste
+    nextPieces.push(letters[Math.floor(Math.random() * letters.length)]); // Ajouter un nouveau
+
+    currentRotation = 0;
     current = customTetrominoes[currentLetter][currentRotation];
     currentPosition = 4;
+
+    updateNextPieces(); // Mettre à jour l'affichage des prochains Tetrominos
     draw();
   }
 
@@ -284,6 +300,7 @@ function draw() {
     isPaused = !isPaused;
     pauseButton.textContent = isPaused ? "⏯︎" : "⏸︎";
     isPaused ? pauseTimer() : startTimer();
+    isPaused ? controlSound("pause") : controlSound("play");
   });
 
   // Contrôles clavier
@@ -292,12 +309,13 @@ function draw() {
     if (e.keyCode === 37) moveLeft();
     else if (e.keyCode === 39) moveRight();
     else if (e.keyCode === 38) rotate();
-    else if (e.keyCode === 40) moveDown();
+    else if (e.keyCode === 40) moveDown(),wait(10000),controlSound("down");
   });
 
   const resetButton = document.getElementById("reset-btn");
   resetButton.addEventListener("click", () => {
-    dropInterval =700
+    dropInterval = 700;
+    controlSound("stop")
     resetTimer();
     resetGrid();
   });
@@ -344,6 +362,7 @@ function draw() {
       // Vérifier si toute la ligne est prise
       if (row.every((index) => squares[index]?.classList.contains("taken"))) {
         // Supprimer la ligne (effacer classes et contenu)
+        controlSound("remove")
         row.forEach((index) => {
           squares[index].classList.remove("taken", "block", ...letters);
           squares[index].textContent = "";
@@ -423,20 +442,38 @@ function draw() {
 
     return !(isLeftSupported || isRightSupported);
   }
+
+  let lastFrameTime = performance.now();
+  let frameCount = 0;
+  let fps = 0;
+  const targetFrameTime = 1000 / 60; // 60 FPS = 16.67 ms par frame
+
   async function animate(time) {
     if (!isPaused) {
-      const deltaTime = time - lastDropTime;
-      if (timer.includes(":15") || timer.includes(":30")) {
-        await wait(1000);
-        dropInterval -= 100;
+      const deltaTime = time - lastFrameTime;
+      // Si le temps écoulé depuis la dernière frame est inférieur à 16.67 ms, on attend
+      if (deltaTime < targetFrameTime) {
+        requestAnimationFrame(animate);
+        return;
       }
-      if (deltaTime > dropInterval) {
+
+      frameCount++;
+      lastFrameTime += targetFrameTime; // 🔥 Fixe un vrai intervalle constant entre les frames
+
+      // Vérification et mise à jour du FPS toutes les secondes
+      if (time - lastFrameTime >= 1000) {
+        fps = frameCount;
+        frameCount = 0;
+        document.getElementById("fps-display").textContent = `FPS: ${fps}`;
+      }
+
+      // Gérer la descente des Tetrominos
+      if (time - lastDropTime > dropInterval) {
         moveDown();
         lastDropTime = time;
       }
     }
 
-    // Continuer l'animation
     requestAnimationFrame(animate);
   }
 
@@ -557,3 +594,31 @@ function resetTimer() {
   totalSeconds = 0;
   timerDisplay.textContent = "Time : 0:00";
 }
+
+  let sound = new Audio("/static/song/base_sound.mp3")
+  sound.loop=true;
+  function controlSound(action) {
+    switch (action) {
+      case "play":
+        sound.play();
+        break;
+      case "pause":
+        sound.pause();
+        break;
+      case "stop":
+        sound.pause();
+        sound.currentTime = 0;
+        break;
+      case "remove":
+        let remove = new Audio("/static/song/remove.mp3")
+        remove.play();
+        break;
+      case "collision":
+        let collision = new Audio("/static/song/collision.mp3")
+        collision.play();
+      case "down":
+        let down = new Audio("/static/song/down.mp3")
+        down.play();
+        break;
+    }
+  }
