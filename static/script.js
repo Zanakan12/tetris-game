@@ -294,13 +294,31 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const pauseButton = document.getElementById("pause-btn");
-
-  pauseButton.addEventListener("click", () => {
-    isPaused = !isPaused;
-    pauseButton.textContent = isPaused ? "⏯︎" : "⏸︎";
-    isPaused ? pauseTimer() : startTimer();
-    isPaused ? controlSound("pause") : controlSound("play");
+  // Quand on appuie sur "P", on met en pause/reprend
+  document.addEventListener("keydown", (event) => {
+    if (event.key.toLowerCase() === "p") {
+      togglePause();
+    }
   });
+
+  // Quand on clique sur le bouton Pause/Reprendre
+  pauseButton.addEventListener("click", togglePause);
+
+  const pauseMenu = document.getElementById("pause-menu");
+  function togglePause() {
+    isPaused = !isPaused;
+    pauseMenu.classList.toggle("hidden"); // ✅ Alterne la visibilité
+    pauseButton.textContent = isPaused ? "Reprendre" : "Pause";
+
+    if (isPaused) {
+        pauseTimer();
+        controlSound("pause");
+    } else {
+        startTimer();
+        controlSound("play");
+    }
+}
+
 
   // Contrôles clavier
   document.addEventListener("keydown", (e) => {
@@ -308,13 +326,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.keyCode === 37) moveLeft();
     else if (e.keyCode === 39) moveRight();
     else if (e.keyCode === 38) rotate();
-    else if (e.keyCode === 40)moveDown();
+    else if (e.keyCode === 40) moveDown();
   });
 
   const resetButton = document.getElementById("reset-btn");
   resetButton.addEventListener("click", () => {
     dropInterval = 700;
-    controlSound("stop")
+    controlSound("stop");
     resetTimer();
     resetGrid();
   });
@@ -326,7 +344,7 @@ document.addEventListener("DOMContentLoaded", () => {
       squares[i].textContent = "";
     }
 
-    pauseButton.textContent = "⏯︎";
+    pauseButton.textContent = "Reprendre";
     resetButton.style.display = "";
     startNewTetromino();
   }
@@ -361,7 +379,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Vérifier si toute la ligne est prise
       if (row.every((index) => squares[index]?.classList.contains("taken"))) {
         // Supprimer la ligne (effacer classes et contenu)
-        controlSound("remove")
+        controlSound("remove");
         row.forEach((index) => {
           squares[index].classList.remove("taken", "block", ...letters);
           squares[index].textContent = "";
@@ -594,30 +612,30 @@ function resetTimer() {
   timerDisplay.textContent = "Time : 0:00";
 }
 
-  let sound = new Audio("/static/song/base_sound.mp3")
-  sound.loop=true;
-  function controlSound(action) {
-    switch (action) {
-      case "play":
-        sound.play();
-        break;
-      case "pause":
-        sound.pause();
-        break;
-      case "stop":
-        sound.pause();
-        sound.currentTime = 0;
-        break;
-      case "remove":
-        let remove = new Audio("/static/song/remove.mp3")
-        remove.play();
-        break;
-      case "collision":
-        let collision = new Audio("/static/song/collision.mp3")
-        collision.play();
-      case "down":
-        let down = new Audio("/static/song/down.mp3")
-        down.play();
-        break;
-    }
+let sound = new Audio("/static/song/base_sound.mp3");
+sound.loop = true;
+function controlSound(action) {
+  switch (action) {
+    case "play":
+      sound.play();
+      break;
+    case "pause":
+      sound.pause();
+      break;
+    case "stop":
+      sound.pause();
+      sound.currentTime = 0;
+      break;
+    case "remove":
+      let remove = new Audio("/static/song/remove.mp3");
+      remove.play();
+      break;
+    case "collision":
+      let collision = new Audio("/static/song/collision.mp3");
+      collision.play();
+    case "down":
+      let down = new Audio("/static/song/down.mp3");
+      down.play();
+      break;
   }
+}

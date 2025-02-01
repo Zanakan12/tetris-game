@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,16 +7,24 @@
     <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
+
     <h1>Tetris</h1>
     <div id="fps-display">FPS: 0</div>
     <div id="rank"></div>
+
+    <!-- ✅ Ajout d’un bouton Pause accessible en jeu -->
+    <button id="pause-toggle-btn">Pause</button>
+
+    <!-- 🎮 Menu de pause -->
     <div id="pause-menu" class="hidden">
         <div class="menu-content">
             <h2>Pause</h2>
             <button id="pause-btn">Reprendre</button>
             <button id="reset-btn">Redémarrer</button>
+            <button id="quit-btn">Quitter</button> <!-- Optionnel -->
         </div>
     </div>
+
     <div id="fire-container"></div>
     <div id="grid"></div>
     <div id="score-container">
@@ -40,18 +48,20 @@
                 <!-- Les scores seront ajoutés ici via script.js -->
             </tbody>
         </table>
-        <table id="pagination-buton">
-            <td><button id="prevPage">← Prev</button></td>
-            <td><button id="nextPage">Next →</button></td>
-        </table>
-
+        <!-- ✅ Correction des boutons de pagination -->
+        <div id="pagination-buttons">
+            <button id="prevPage">← Prev</button>
+            <button id="nextPage">Next →</button>
+        </div>
     </div>
+
+    <!-- 🎲 Prochaines pièces -->
     <div id="next-pieces-container">
         <h3>Next</h3>
         <div id="next-piece-1" class="next-piece"></div>
         <div id="next-piece-2" class="next-piece"></div>
         <div id="next-piece-3" class="next-piece"></div>
-      </div>
+    </div>
       
     <script src="static/script.js" defer></script>
 </body>
