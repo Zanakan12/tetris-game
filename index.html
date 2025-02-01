@@ -10,8 +10,13 @@
     <h1>Tetris</h1>
     <div id="fps-display">FPS: 0</div>
     <div id="rank"></div>
-    <button id="reset-btn">⏹︎</button>
-    <button id="pause-btn">⏯︎</button>
+    <div id="pause-menu" class="hidden">
+        <div class="menu-content">
+            <h2>Pause</h2>
+            <button id="pause-btn">Reprendre</button>
+            <button id="reset-btn">Redémarrer</button>
+        </div>
+    </div>
     <div id="fire-container"></div>
     <div id="grid"></div>
     <div id="score-container">

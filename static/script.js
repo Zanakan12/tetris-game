@@ -169,7 +169,6 @@ document.addEventListener("DOMContentLoaded", () => {
       )
     ) {
       if (!freezeDelay) {
-        controlSound("collision")
         freezeDelay = true; // Active le délai
         console.log("⏳ Attente pour un dernier déplacement...");
 
@@ -309,7 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.keyCode === 37) moveLeft();
     else if (e.keyCode === 39) moveRight();
     else if (e.keyCode === 38) rotate();
-    else if (e.keyCode === 40) moveDown(),wait(10000),controlSound("down");
+    else if (e.keyCode === 40)moveDown();
   });
 
   const resetButton = document.getElementById("reset-btn");
