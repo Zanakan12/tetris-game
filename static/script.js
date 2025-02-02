@@ -293,7 +293,7 @@ document.addEventListener("DOMContentLoaded", () => {
     draw();
   }
 
-  const pauseButton = document.getElementById("pause-btn");
+  const pauseButton = document.getElementById("pause-toggle-btn");
   // Quand on appuie sur "P", on met en pause/reprend
   document.addEventListener("keydown", (event) => {
     if (event.key.toLowerCase() === "p") {
@@ -302,13 +302,16 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Quand on clique sur le bouton Pause/Reprendre
-  pauseButton.addEventListener("click", togglePause);
+  pauseButton.addEventListener("click", () => {
+    (!isPaused)?togglePause():isPaused=!isPaused;
+    if(isPaused)pauseButton.style.visibility="hidden";
+  });
 
   const pauseMenu = document.getElementById("pause-menu");
   function togglePause() {
     isPaused = !isPaused;
     pauseMenu.classList.toggle("hidden"); // ✅ Alterne la visibilité
-    pauseButton.textContent = isPaused ? "Reprendre" : "Pause";
+    
 
     if (isPaused) {
         pauseTimer();
@@ -317,8 +320,14 @@ document.addEventListener("DOMContentLoaded", () => {
         startTimer();
         controlSound("play");
     }
+    
 }
-
+  const resumeButton = document.getElementById("resume-btn")
+  resumeButton.addEventListener("click",()=>{
+    pauseMenu.classList.toggle("hidden");
+    isPaused = !isPaused;
+    pauseButton.style.visibility = "visible";
+  });
 
   // Contrôles clavier
   document.addEventListener("keydown", (e) => {
@@ -335,6 +344,10 @@ document.addEventListener("DOMContentLoaded", () => {
     controlSound("stop");
     resetTimer();
     resetGrid();
+    pauseMenu.classList.toggle("hidden");
+    isPaused = !isPaused;
+    pauseButton.style.visibility = "visible";
+
   });
 
   function resetGrid() {
@@ -344,7 +357,7 @@ document.addEventListener("DOMContentLoaded", () => {
       squares[i].textContent = "";
     }
 
-    pauseButton.textContent = "Reprendre";
+    pauseButton.textContent = "Pause";
     resetButton.style.display = "";
     startNewTetromino();
   }
