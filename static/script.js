@@ -1,37 +1,41 @@
-// Code complet pour un jeu Tetris affichant les lettres sur la grille
+// ========== VARIABLES GLOBALES & FONCTIONS UTILITAIRES ==========
 const apiBaseUrl = "http://localhost:8080/api/scores";
 let timer = "";
+
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+
+// ========== LOGIQUE DU JEU TETRIS ==========
 document.addEventListener("DOMContentLoaded", () => {
+  // --- Variables du jeu ---
   let score = 0;
   let lastDropTime = 0; // Dernier moment où un bloc est descendu
-  let isPaused = true; // État du jeu
+  let isPaused = true;  // État du jeu
   let dropInterval = 700; // Intervalle de descente (en ms)
 
-  // Afficher les données
+  // --- Sélection des éléments du DOM ---
   const grid = document.querySelector("#grid");
   const scoreDisplay = document.querySelector("#score");
   // const rankDisplay = document.getElementById("rank");
 
-  // Création de la grille (10x20 + 10 cellules invisibles pour les collisions)
+  // --- Création de la grille (10x20 + 10 cellules invisibles pour les collisions) ---
   for (let i = 0; i < 200; i++) {
     const cell = document.createElement("div");
     grid.appendChild(cell);
   }
-
-  // Ajouter une classe spéciale aux 10 dernières cellules pour le style
+  // Ajout des 10 cellules spéciales en bas (pour le style et les collisions)
   for (let i = 0; i < 10; i++) {
     const cell = document.createElement("div");
-    cell.classList.add("taken", "bottom-line"); // Ajoute une nouvelle classe "bottom-line"
+    cell.classList.add("taken", "bottom-line");
+    cell.textContent = "🧱";
     grid.appendChild(cell);
   }
-
   const squares = Array.from(document.querySelectorAll("#grid div"));
   const width = 10;
 
-  // Définition des Tetrominos personnalisés (lettres)
+  // --- Définition des Tetrominos personnalisés (lettres) ---
   const customTetrominoes = {
     J: [
       [1, width + 1, width * 2 + 1, 2],
@@ -84,26 +88,195 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentLetter = letters[random];
   let current = customTetrominoes[currentLetter][currentRotation];
 
-  function getTetrominoSymbol(letter) {
-    switch (letter) {
-      case "J":
-        return "🟥";
-      case "T":
-        return "🟩";
-      case "I":
-        return "🟪";
-      case "O":
-        return "🟨";
-      case "L":
-        return "🟧";
-      case "Z":
-        return "🟦";
-      case "S":
-        return "🟫";
-      default:
-        return "";
+  // --- Définition des maps ---
+  const maps = [
+    // Map 1 : Bordures latérales pleines
+    [
+      ...Array(10).fill(1), // Bordure du haut
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      ...Array(10).fill(0), // Bordure du bas
+    ],
+
+    // Map 2 : Colonnes au centre
+    [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      ...Array(10).fill(0), // Lignes normales
+    ],
+
+    // Map 3 : Mur de trous aléatoires
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0,
+      1,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      ...Array(10).fill(0),
+    ],
+  ];
+
+  function loadMap(mapIndex) {
+    const selectedMap = maps[mapIndex];
+    for (let i = 0; i < selectedMap.length; i++) {
+      if (selectedMap[i] === 1) {
+        squares[i].classList.add("obstacle");
+        squares[i].textContent = "🧱"; // Mur fixe
+      }
     }
   }
+
+  document.getElementById("change-map-btn").addEventListener("click", () => {
+    let newMapIndex = Math.floor(Math.random() * maps.length);
+    console.log(newMapIndex);
+    resetGrid(); // Réinitialiser la grille
+    loadMap(newMapIndex); // Charger la nouvelle map
+  });
+
+  // --- Gestion des symboles des Tetrominos ---
+  function getTetrominoSymbol(letter,type) {
+    switch (letter) {
+      case "J":
+        return(type==="symbol")?"⠼":"🟥";
+      case "T":
+        return(type==="symbol")?"⠺":"🟩";
+      case "I":
+        return(type==="symbol")?"⠸":"🟪";
+      case "O":
+        return(type==="symbol")?"∷":"🟨";
+      case "L":
+        return(type==="symbol")?"⠧":"🟧";
+      case "Z":
+        return(type==="symbol")?"⠞":"🟦";
+      case "S":
+        return(type==="symbol")?"⠳":"🟫";
+      default:
+        return(type==="symbol")?"✾":"";
+    }
+  }
+
+  // --- Gestion des prochaines pièces ---
   let nextPieces = [];
   for (let i = 0; i < 3; i++) {
     nextPieces.push(letters[Math.floor(Math.random() * letters.length)]);
@@ -112,24 +285,23 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateNextPieces() {
     for (let i = 0; i < 3; i++) {
       const nextPieceDiv = document.getElementById(`next-piece-${i + 1}`);
-      nextPieceDiv.textContent = nextPieces[i];
+      nextPieceDiv.textContent = getTetrominoSymbol(nextPieces[i],"symbol");
     }
   }
   updateNextPieces();
-  // Dessiner le Tetromino (lettre)
+
+  // --- Fonctions de dessin et d'effacement ---
   function draw() {
     current.forEach((index) => {
       const square = squares[currentPosition + index];
-
       // Vérifier que la cellule n'est pas déjà prise
       if (!square.classList.contains("taken")) {
         square.classList.add("block", currentLetter); // Ajoute la classe de la lettre
-        square.textContent = getTetrominoSymbol(currentLetter);
+        square.textContent = getTetrominoSymbol(currentLetter,"");
       }
     });
   }
 
-  // Effacer le Tetromino (lettre)
   function undraw() {
     current.forEach((index) => {
       const position = currentPosition + index;
@@ -141,7 +313,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Déplacement vers le bas
+  // --- Gestion des déplacements et de la rotation ---
   function moveDown() {
     undraw();
     const newPosition = currentPosition + width;
@@ -254,7 +426,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    //permettre un cycle infini de rotation sans if
+    // Permettre un cycle infini de rotation sans if
     const nextRotation =
       (currentRotation + 1) % customTetrominoes[currentLetter].length;
     const next = customTetrominoes[currentLetter][nextRotation];
@@ -280,7 +452,7 @@ document.addEventListener("DOMContentLoaded", () => {
     draw();
   }
 
-  // Lancer un nouveau Tetromino (lettre)
+  // --- Lancer un nouveau Tetromino ---
   function startNewTetromino() {
     currentLetter = nextPieces.shift(); // Prendre le premier de la liste
     nextPieces.push(letters[Math.floor(Math.random() * letters.length)]); // Ajouter un nouveau
@@ -293,6 +465,7 @@ document.addEventListener("DOMContentLoaded", () => {
     draw();
   }
 
+  // --- Gestion de la pause / reprise ---
   const pauseButton = document.getElementById("pause-toggle-btn");
   // Quand on appuie sur "P", on met en pause/reprend
   document.addEventListener("keydown", (event) => {
@@ -303,33 +476,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Quand on clique sur le bouton Pause/Reprendre
   pauseButton.addEventListener("click", () => {
-    (!isPaused)?togglePause():isPaused=!isPaused;
-    if(isPaused)pauseButton.style.visibility="hidden";
+    !isPaused ? togglePause() : (isPaused = !isPaused);
+    controlSound("play");
+    startTimer();
+    if (isPaused) pauseButton.style.visibility = "hidden";
+    if(isPaused) controlSound("pause");
   });
 
   const pauseMenu = document.getElementById("pause-menu");
   function togglePause() {
     isPaused = !isPaused;
     pauseMenu.classList.toggle("hidden"); // ✅ Alterne la visibilité
-    
 
     if (isPaused) {
-        pauseTimer();
-        controlSound("pause");
+      pauseTimer();
+      controlSound("pause");
     } else {
-        startTimer();
-        controlSound("play");
+      startTimer();
+      controlSound("play");
     }
-    
-}
-  const resumeButton = document.getElementById("resume-btn")
-  resumeButton.addEventListener("click",()=>{
+  }
+  const resumeButton = document.getElementById("resume-btn");
+  resumeButton.addEventListener("click", () => {
     pauseMenu.classList.toggle("hidden");
     isPaused = !isPaused;
     pauseButton.style.visibility = "visible";
+    if(!isPaused) controlSound("play");
   });
 
-  // Contrôles clavier
+  // --- Contrôles clavier ---
   document.addEventListener("keydown", (e) => {
     if (isPaused) return; // Bloque les mouvements si le jeu est en pause
     if (e.keyCode === 37) moveLeft();
@@ -338,6 +513,7 @@ document.addEventListener("DOMContentLoaded", () => {
     else if (e.keyCode === 40) moveDown();
   });
 
+  // --- Bouton de réinitialisation ---
   const resetButton = document.getElementById("reset-btn");
   resetButton.addEventListener("click", () => {
     dropInterval = 700;
@@ -347,7 +523,7 @@ document.addEventListener("DOMContentLoaded", () => {
     pauseMenu.classList.toggle("hidden");
     isPaused = !isPaused;
     pauseButton.style.visibility = "visible";
-
+    controlSound("play");
   });
 
   function resetGrid() {
@@ -362,6 +538,7 @@ document.addEventListener("DOMContentLoaded", () => {
     startNewTetromino();
   }
 
+  // --- Fin de partie ---
   function endGame() {
     if (
       current.some((index) =>
@@ -385,6 +562,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // --- Suppression des lignes et gestion des briques flottantes ---
   function removeLine() {
     for (let i = 0; i < 200; i += width) {
       const row = Array.from({ length: width }, (_, j) => i + j);
@@ -449,7 +627,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Fonction pour vérifier si un bloc est flottant
+  // Vérifier si un bloc est flottant
   function isBlockFloating(index) {
     // Vérifie uniquement les blocs dans la grille
     if (index >= 190) return false; // Les blocs sur la dernière ligne ne tombent pas
@@ -473,6 +651,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return !(isLeftSupported || isRightSupported);
   }
 
+  // --- Boucle d'animation ---
   let lastFrameTime = performance.now();
   let frameCount = 0;
   let fps = 0;
@@ -507,12 +686,12 @@ document.addEventListener("DOMContentLoaded", () => {
     requestAnimationFrame(animate);
   }
 
-  // Déplacement automatique
+  // Lancement de l'animation
   requestAnimationFrame(animate);
 });
 
-//-----------------------------------------------------------------------
 
+// ========== GESTION DES SCORES & PAGINATION ==========
 let currentPage = 1;
 const limit = 5;
 const tableBody = document.getElementById("scoreTableBody");
@@ -558,6 +737,7 @@ async function submitScore(name, score, time) {
     console.error("Erreur lors de la soumission du score :", error);
   }
 }
+
 // Fonction pour récupérer les scores
 async function fetchScores(page) {
   try {
@@ -569,6 +749,7 @@ async function fetchScores(page) {
     console.error("Erreur lors de la récupération des scores :", error);
   }
 }
+
 // Fonction pour afficher les scores
 function displayScores(scores) {
   tableBody.innerHTML = ""; // Vider le tableau avant d'ajouter de nouveaux scores
@@ -590,7 +771,9 @@ function displayScores(scores) {
     tableBody.appendChild(row);
   });
 }
-/*-------------------------------------------------------------------------*/
+
+
+// ========== GESTION DU TIMER ==========
 let totalSeconds = 0;
 let timerInterval = null;
 const timerDisplay = document.getElementById("timer");
@@ -625,8 +808,11 @@ function resetTimer() {
   timerDisplay.textContent = "Time : 0:00";
 }
 
+
+// ========== GESTION DU SON ==========
 let sound = new Audio("/static/song/base_sound.mp3");
 sound.loop = true;
+
 function controlSound(action) {
   switch (action) {
     case "play":
