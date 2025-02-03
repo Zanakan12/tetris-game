@@ -7,6 +7,16 @@
     <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
+    <!-- Boîte de prompt stylisée -->
+    <div class="overlay" id="customPrompt">
+        <div class="prompt-box">
+            <h2>🏆 Entre ton nom de joueur :</h2>
+            <input type="text" id="playerNameInput" placeholder="Ex: ShadowKiller">
+            <br>
+            <button id="btn-confirm" class="btn-confirm" >OK</button>
+            <button id="btn-cancel" class="btn-cancel">Annuler</button>
+        </div>
+    </div>
 
     <h1>Tetris</h1>
     <div id="fps-display">FPS: 0</div>

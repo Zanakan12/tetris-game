@@ -6,14 +6,13 @@ function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-
 // ========== LOGIQUE DU JEU TETRIS ==========
 document.addEventListener("DOMContentLoaded", () => {
   // --- Variables du jeu ---
   let score = 0;
   let lastDropTime = 0; // Dernier moment où un bloc est descendu
-  let isPaused = true;  // État du jeu
-  let dropInterval = 700; // Intervalle de descente (en ms)
+  let isPaused = true; // État du jeu
+  let dropInterval = 200; // Intervalle de descente (en ms)
 
   // --- Sélection des éléments du DOM ---
   const grid = document.querySelector("#grid");
@@ -255,24 +254,24 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // --- Gestion des symboles des Tetrominos ---
-  function getTetrominoSymbol(letter,type) {
+  function getTetrominoSymbol(letter, type) {
     switch (letter) {
       case "J":
-        return(type==="symbol")?"⠼":"🟥";
+        return type === "symbol" ? "⠼" : "🟥";
       case "T":
-        return(type==="symbol")?"⠺":"🟩";
+        return type === "symbol" ? "⠺" : "🟩";
       case "I":
-        return(type==="symbol")?"⠸":"🟪";
+        return type === "symbol" ? "⠸" : "🟪";
       case "O":
-        return(type==="symbol")?"∷":"🟨";
+        return type === "symbol" ? "∷" : "🟨";
       case "L":
-        return(type==="symbol")?"⠧":"🟧";
+        return type === "symbol" ? "⠧" : "🟧";
       case "Z":
-        return(type==="symbol")?"⠞":"🟦";
+        return type === "symbol" ? "⠞" : "🟦";
       case "S":
-        return(type==="symbol")?"⠳":"🟫";
+        return type === "symbol" ? "⠳" : "🟫";
       default:
-        return(type==="symbol")?"✾":"";
+        return type === "symbol" ? "✾" : "";
     }
   }
 
@@ -285,7 +284,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateNextPieces() {
     for (let i = 0; i < 3; i++) {
       const nextPieceDiv = document.getElementById(`next-piece-${i + 1}`);
-      nextPieceDiv.textContent = getTetrominoSymbol(nextPieces[i],"symbol");
+      nextPieceDiv.textContent = getTetrominoSymbol(nextPieces[i], "symbol");
     }
   }
   updateNextPieces();
@@ -297,7 +296,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Vérifier que la cellule n'est pas déjà prise
       if (!square.classList.contains("taken")) {
         square.classList.add("block", currentLetter); // Ajoute la classe de la lettre
-        square.textContent = getTetrominoSymbol(currentLetter,"");
+        square.textContent = getTetrominoSymbol(currentLetter, "");
       }
     });
   }
@@ -480,7 +479,7 @@ document.addEventListener("DOMContentLoaded", () => {
     controlSound("play");
     startTimer();
     if (isPaused) pauseButton.style.visibility = "hidden";
-    if(isPaused) controlSound("pause");
+    if (isPaused) controlSound("pause");
   });
 
   const pauseMenu = document.getElementById("pause-menu");
@@ -501,7 +500,7 @@ document.addEventListener("DOMContentLoaded", () => {
     pauseMenu.classList.toggle("hidden");
     isPaused = !isPaused;
     pauseButton.style.visibility = "visible";
-    if(!isPaused) controlSound("play");
+    if (!isPaused) controlSound("play");
   });
 
   // --- Contrôles clavier ---
@@ -545,22 +544,42 @@ document.addEventListener("DOMContentLoaded", () => {
         squares[currentPosition + index].classList.contains("taken")
       )
     ) {
-      // Demander le nom du joueur et enregistrer son score
-      const playerName = prompt(
-        "Entrez votre nom pour sauvegarder votre score :"
-      );
       pauseTimer();
-      if (playerName) {
-        submitScore(playerName, score, timer); // Temps par défaut (à adapter)
-      }
-      // Réinitialiser le jeu
       resetGrid();
-      resetTimer();
-      dropInterval = 700;
-      scoreDisplay.textContent = `Score: ${(score = 0)}`;
-      isPaused = true;
+      showPrompt().then((playerName) => {
+        if (playerName) {
+          submitScore(playerName, score, timer);
+        }
+        resetGame();
+      });
     }
   }
+  
+  function showPrompt() {
+    return new Promise((resolve) => {
+      document.getElementById("customPrompt").classList.add("active");
+  
+      const buttonPromptConfirm = document.getElementById("btn-confirm");
+      buttonPromptConfirm.addEventListener("click", () => {
+        const playerName = document.getElementById("playerNameInput").value;
+        closePrompt();
+        resolve(playerName || "Player1"); // Si vide, utiliser "Player1"
+      }, { once: true }); // Ajout de `{ once: true }` pour éviter plusieurs écoutes
+    });
+  }
+  
+  function closePrompt() {
+    document.getElementById("customPrompt").classList.remove("active");
+  }
+  
+  function resetGame() {
+    resetTimer();
+    controlSound("stop");
+    dropInterval = 700;
+    scoreDisplay.textContent = `Score: ${(score = 0)}`;
+    isPaused = true;
+  }
+  
 
   // --- Suppression des lignes et gestion des briques flottantes ---
   function removeLine() {
@@ -690,7 +709,6 @@ document.addEventListener("DOMContentLoaded", () => {
   requestAnimationFrame(animate);
 });
 
-
 // ========== GESTION DES SCORES & PAGINATION ==========
 let currentPage = 1;
 const limit = 5;
@@ -726,13 +744,7 @@ async function submitScore(name, score, time) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, score: parseInt(score), time }),
     });
-
-    if (response.ok) {
-      alert(`${name}, ton score de ${score} a été enregistré !`);
-      fetchScores(1); // Mettre à jour le tableau des scores
-    } else {
-      alert("Erreur lors de l'ajout du score.");
-    }
+    fetchScores(1);
   } catch (error) {
     console.error("Erreur lors de la soumission du score :", error);
   }
@@ -772,7 +784,6 @@ function displayScores(scores) {
   });
 }
 
-
 // ========== GESTION DU TIMER ==========
 let totalSeconds = 0;
 let timerInterval = null;
@@ -807,7 +818,6 @@ function resetTimer() {
   totalSeconds = 0;
   timerDisplay.textContent = "Time : 0:00";
 }
-
 
 // ========== GESTION DU SON ==========
 let sound = new Audio("/static/song/base_sound.mp3");
