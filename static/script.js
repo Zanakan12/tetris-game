@@ -271,7 +271,7 @@ document.addEventListener("DOMContentLoaded", () => {
       case "S":
         return type === "symbol" ? "⠳" : "🟫";
       default:
-        return type === "symbol" ? "✾" : "";
+        return type === "symbol" ? "✾" : "✳️";
     }
   }
 
@@ -284,9 +284,27 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateNextPieces() {
     for (let i = 0; i < 3; i++) {
       const nextPieceDiv = document.getElementById(`next-piece-${i + 1}`);
-      nextPieceDiv.textContent = getTetrominoSymbol(nextPieces[i], "symbol");
+
+      if (!nextPieceDiv) continue; // Vérifie si l'élément existe
+
+      // Supprime toutes les classes précédentes sauf "next-piece"
+      nextPieceDiv.className = "next-piece";
+
+      // Vérifie si nextPieces existe et contient une pièce valide
+      if (nextPieces && nextPieces[i]) {
+        const pieceType = nextPieces[i]; // Exemple : "T", "I", "J", etc.
+
+        // Ajoute la classe correspondant à la pièce
+        nextPieceDiv.classList.add(pieceType);
+
+        // Ajoute le symbole de la pièce
+        nextPieceDiv.textContent = getTetrominoSymbol(pieceType, "symbol");
+      } else {
+        nextPieceDiv.textContent = ""; // Vide le contenu si aucune pièce
+      }
     }
   }
+
   updateNextPieces();
 
   // --- Fonctions de dessin et d'effacement ---
@@ -341,7 +359,6 @@ document.addEventListener("DOMContentLoaded", () => {
     ) {
       if (!freezeDelay) {
         freezeDelay = true; // Active le délai
-        console.log("⏳ Attente pour un dernier déplacement...");
 
         setTimeout(() => {
           // Vérifier si le joueur a réussi à bouger la pièce
@@ -352,7 +369,6 @@ document.addEventListener("DOMContentLoaded", () => {
               )
             )
           ) {
-            console.log("🛑 Bloc figé !");
             current.forEach((index) =>
               squares[currentPosition + index]?.classList.add("taken")
             );
@@ -554,24 +570,32 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   }
-  
+
   function showPrompt() {
     return new Promise((resolve) => {
       document.getElementById("customPrompt").classList.add("active");
-  
       const buttonPromptConfirm = document.getElementById("btn-confirm");
-      buttonPromptConfirm.addEventListener("click", () => {
-        const playerName = document.getElementById("playerNameInput").value;
-        closePrompt();
-        resolve(playerName || "Player1"); // Si vide, utiliser "Player1"
-      }, { once: true }); // Ajout de `{ once: true }` pour éviter plusieurs écoutes
+      buttonPromptConfirm.addEventListener(
+        "click",
+        () => {
+          const playerName = document.getElementById("playerNameInput").value;
+          closePrompt();
+          resolve(playerName || "Player1"); // Si vide, utiliser "Player1"
+        },
+        { once: true }
+      ); // Ajout de `{ once: true }` pour éviter plusieurs écoutes
     });
   }
-  
+  const buttonPromptCancel = document.getElementById("btn-cancel");
+  buttonPromptCancel.addEventListener("click", () => {
+    closePrompt();
+  });
+
   function closePrompt() {
     document.getElementById("customPrompt").classList.remove("active");
+    resetGame();
   }
-  
+
   function resetGame() {
     resetTimer();
     controlSound("stop");
@@ -579,9 +603,55 @@ document.addEventListener("DOMContentLoaded", () => {
     scoreDisplay.textContent = `Score: ${(score = 0)}`;
     isPaused = true;
   }
-  
 
   // --- Suppression des lignes et gestion des briques flottantes ---
+  // Variables pour la progression de John
+  let linesCleared = 0;
+  let level = 1;
+  const levels = {
+    1: "John trouve un billet de 5$ pour un repas chaud.",
+    2: "John découvre un centre d'hébergement pour la nuit.",
+    3: "Un bénévole lui offre des vêtements propres.",
+    4: "Une opportunité de travail s'offre à lui.",
+    5: "John obtient un logement et un nouveau départ.",
+  };
+
+  // Charger la progression si elle existe
+  if (localStorage.getItem("tetrisLevel")) {
+    level = parseInt(localStorage.getItem("tetrisLevel"));
+    linesCleared = parseInt(localStorage.getItem("tetrisLines"));
+    afficherHistoire(level);
+  }
+
+  // Fonction pour afficher la progression de l'histoire
+  function afficherHistoire(level) {
+    if (levels[level]) {
+      alert("Niveau " + level + " : " + levels[level]);
+    }
+  }
+
+  // Fonction appelée lorsque des lignes sont complétées
+  function linesCompleted(nbLignes) {
+    linesCleared += nbLignes;
+    let newLevel = Math.floor(linesCleared / 10) + 1;
+
+    if (newLevel > level && levels[newLevel]) {
+      level = newLevel;
+      afficherHistoire(level);
+      localStorage.setItem("tetrisLevel", level);
+      localStorage.setItem("tetrisLines", linesCleared);
+    }
+  }
+
+  // Réinitialisation de la progression
+  function resetProgression() {
+    localStorage.removeItem("tetrisLevel");
+    localStorage.removeItem("tetrisLines");
+    level = 1;
+    linesCleared = 0;
+  }
+
+  // Intégration avec le jeu Tetris existant
   function removeLine() {
     for (let i = 0; i < 200; i += width) {
       const row = Array.from({ length: width }, (_, j) => i + j);
@@ -611,6 +681,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         scoreDisplay.textContent = `score: ${(score += 10)}`;
         dropFloatingBricks();
+        linesCompleted(1); // Appeler la fonction pour suivre la progression
       }
     }
   }

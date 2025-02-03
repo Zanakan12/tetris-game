@@ -124,8 +124,24 @@ body {
     border: 2px solid black;
     background-color: #ddd;
 }
+
 .T {
-    color: green !important;
+    color: rgb(0, 128, 0) !important;
+  }
+.I {
+    color: rgb(107, 0, 128) !important;
+  }
+  .J {
+    color: rgb(128, 0, 0) !important;
+  }
+  .L {
+    color: rgb(231, 85, 0) !important;
+  }
+  .Z {
+    color: rgb(9, 0, 128) !important;
+  }
+  .N {
+    color: rgb(65, 35, 0) !important;
   }
 /* Affichage des FPS */
 #fps-display {
