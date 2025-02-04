@@ -12,13 +12,12 @@ document.addEventListener("DOMContentLoaded", () => {
   let score = 0;
   let lastDropTime = 0; // Dernier moment où un bloc est descendu
   let isPaused = true; // État du jeu
-  let dropInterval = 200; // Intervalle de descente (en ms)
+  let dropInterval = 100; // Intervalle de descente (en ms)
 
   // --- Sélection des éléments du DOM ---
   const grid = document.querySelector("#grid");
   const scoreDisplay = document.querySelector("#score");
   // const rankDisplay = document.getElementById("rank");
-
   // --- Création de la grille (10x20 + 10 cellules invisibles pour les collisions) ---
   for (let i = 0; i < 200; i++) {
     const cell = document.createElement("div");
@@ -491,29 +490,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Quand on clique sur le bouton Pause/Reprendre
   pauseButton.addEventListener("click", () => {
+    if ((pauseButton.textContent = "Play")) pauseButton.textContent = "Pause";
     !isPaused ? togglePause() : (isPaused = !isPaused);
     controlSound("play");
-    startTimer();
-    if (isPaused) pauseButton.style.visibility = "hidden";
+
+    if (isPaused) (pauseButton.style.visibility = "hidden"), startTimer();
     if (isPaused) controlSound("pause");
   });
 
   const pauseMenu = document.getElementById("pause-menu");
-  function togglePause() {
+  // Fonction pour basculer l'affichage du menu pause
+function togglePause() {
     isPaused = !isPaused;
-    pauseMenu.classList.toggle("hidden"); // ✅ Alterne la visibilité
 
     if (isPaused) {
-      pauseTimer();
-      controlSound("pause");
+        pauseMenu.classList.add("active"); // Affiche le menu
+        pauseMenu.classList.remove("hidden"); // Assure qu'il est visible
+        pauseTimer();  // Met le timer en pause
+        controlSound("pause"); // Joue le son de pause
     } else {
-      startTimer();
-      controlSound("play");
+        pauseMenu.classList.remove("active"); // Cache le menu
+        pauseMenu.classList.add("hidden"); // Assure qu'il est caché
+        startTimer();  // Reprend le timer
+        controlSound("play"); // Joue le son de reprise
     }
-  }
+}
   const resumeButton = document.getElementById("resume-btn");
   resumeButton.addEventListener("click", () => {
-    pauseMenu.classList.toggle("hidden");
+    pauseMenu.classList.toggle("active");
     isPaused = !isPaused;
     pauseButton.style.visibility = "visible";
     if (!isPaused) controlSound("play");
@@ -531,16 +535,21 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- Bouton de réinitialisation ---
   const resetButton = document.getElementById("reset-btn");
   resetButton.addEventListener("click", () => {
-    dropInterval = 700;
+    dropInterval = 100;
     controlSound("stop");
     resetTimer();
     resetGrid();
-    pauseMenu.classList.toggle("hidden");
+    pauseMenu.classList.remove("active")
+    pauseMenu.classList.add("hidden");
     isPaused = !isPaused;
     pauseButton.style.visibility = "visible";
     controlSound("play");
   });
 
+  const quitButton=document.getElementById("quit-btn");
+  quitButton.addEventListener("click",()=>{
+    window.close();
+  });
   function resetGrid() {
     isPaused = true;
     for (let i = 0; i < 200; i++) {
@@ -599,7 +608,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function resetGame() {
     resetTimer();
     controlSound("stop");
-    dropInterval = 700;
+    dropInterval = 100;
     scoreDisplay.textContent = `Score: ${(score = 0)}`;
     isPaused = true;
   }
