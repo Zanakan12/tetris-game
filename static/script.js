@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let score = 0;
   let lastDropTime = 0; // Dernier moment où un bloc est descendu
   let isPaused = true; // État du jeu
-  let dropInterval = 100; // Intervalle de descente (en ms)
+  let dropInterval = 500; // Intervalle de descente (en ms)
 
   // --- Sélection des éléments du DOM ---
   const grid = document.querySelector("#grid");
@@ -372,6 +372,7 @@ document.addEventListener("DOMContentLoaded", () => {
               squares[currentPosition + index]?.classList.add("taken")
             );
             removeLine();
+
             startNewTetromino();
           }
           freezeDelay = false; // Réinitialise le délai
@@ -474,7 +475,6 @@ document.addEventListener("DOMContentLoaded", () => {
     currentRotation = 0;
     current = customTetrominoes[currentLetter][currentRotation];
     currentPosition = 4;
-
     updateNextPieces(); // Mettre à jour l'affichage des prochains Tetrominos
     draw();
   }
@@ -493,34 +493,35 @@ document.addEventListener("DOMContentLoaded", () => {
     if ((pauseButton.textContent = "Play")) pauseButton.textContent = "Pause";
     !isPaused ? togglePause() : (isPaused = !isPaused);
     controlSound("play");
-
-    if (isPaused) (pauseButton.style.visibility = "hidden"), startTimer();
+    startTimer();
+    if (isPaused) pauseButton.style.visibility = "hidden";
     if (isPaused) controlSound("pause");
   });
 
   const pauseMenu = document.getElementById("pause-menu");
   // Fonction pour basculer l'affichage du menu pause
-function togglePause() {
+  function togglePause() {
     isPaused = !isPaused;
 
     if (isPaused) {
-        pauseMenu.classList.add("active"); // Affiche le menu
-        pauseMenu.classList.remove("hidden"); // Assure qu'il est visible
-        pauseTimer();  // Met le timer en pause
-        controlSound("pause"); // Joue le son de pause
+      pauseMenu.classList.add("active"); // Affiche le menu
+      pauseMenu.classList.remove("hidden"); // Assure qu'il est visible
+      pauseTimer(); // Met le timer en pause
+      controlSound("pause"); // Joue le son de pause
     } else {
-        pauseMenu.classList.remove("active"); // Cache le menu
-        pauseMenu.classList.add("hidden"); // Assure qu'il est caché
-        startTimer();  // Reprend le timer
-        controlSound("play"); // Joue le son de reprise
+      pauseMenu.classList.remove("active"); // Cache le menu
+      pauseMenu.classList.add("hidden"); // Assure qu'il est caché
+      startTimer(); // Reprend le timer
+      controlSound("play"); // Joue le son de reprise
     }
-}
+  }
   const resumeButton = document.getElementById("resume-btn");
   resumeButton.addEventListener("click", () => {
     pauseMenu.classList.toggle("active");
     isPaused = !isPaused;
     pauseButton.style.visibility = "visible";
     if (!isPaused) controlSound("play");
+    if (!isPaused) startTimer();
   });
 
   // --- Contrôles clavier ---
@@ -535,19 +536,22 @@ function togglePause() {
   // --- Bouton de réinitialisation ---
   const resetButton = document.getElementById("reset-btn");
   resetButton.addEventListener("click", () => {
-    dropInterval = 100;
+    dropInterval = 500;
     controlSound("stop");
     resetTimer();
     resetGrid();
-    pauseMenu.classList.remove("active")
+    score = 0;
+    scoreDisplay.textContent = "Score: 0";
+    pauseMenu.classList.remove("active");
     pauseMenu.classList.add("hidden");
+
     isPaused = !isPaused;
     pauseButton.style.visibility = "visible";
     controlSound("play");
   });
 
-  const quitButton=document.getElementById("quit-btn");
-  quitButton.addEventListener("click",()=>{
+  const quitButton = document.getElementById("quit-btn");
+  quitButton.addEventListener("click", () => {
     window.close();
   });
   function resetGrid() {
@@ -608,56 +612,89 @@ function togglePause() {
   function resetGame() {
     resetTimer();
     controlSound("stop");
-    dropInterval = 100;
+    dropInterval = 500;
     scoreDisplay.textContent = `Score: ${(score = 0)}`;
     isPaused = true;
   }
 
   // --- Suppression des lignes et gestion des briques flottantes ---
-  // Variables pour la progression de John
-  let linesCleared = 0;
-  let level = 1;
-  const levels = {
-    1: "John trouve un billet de 5$ pour un repas chaud.",
-    2: "John découvre un centre d'hébergement pour la nuit.",
-    3: "Un bénévole lui offre des vêtements propres.",
-    4: "Une opportunité de travail s'offre à lui.",
-    5: "John obtient un logement et un nouveau départ.",
-  };
+  // Variables pour la progression de Dasmso
 
-  // Charger la progression si elle existe
-  if (localStorage.getItem("tetrisLevel")) {
-    level = parseInt(localStorage.getItem("tetrisLevel"));
-    linesCleared = parseInt(localStorage.getItem("tetrisLines"));
-    afficherHistoire(level);
-  }
+  function showStory(score) {
+    const levels = {
+      1: "Damso trouve un billet de 5$ pour un repas chaud.",
+      2: "Damso trouve un briquet pour faire du feu.",
+      3: "Damso trouve un logement contre service.",
+      4: "Damso trouve un micro et une enceinte.",
+      5: "Damso est repéré par Booba et signe un premier contrat.",
+      6: "Damso enregistre son premier morceau en studio.",
+      7: "Damso gagne en popularité et sort son premier album.",
+      8: "Damso reçoit un disque d’or pour son album.",
+      9: "Damso devient une star internationale et collabore avec de grands artistes.",
+      10: "Damso marque l’histoire du rap et inspire une nouvelle génération d’artistes.",
+    };
 
-  // Fonction pour afficher la progression de l'histoire
-  function afficherHistoire(level) {
-    if (levels[level]) {
-      alert("Niveau " + level + " : " + levels[level]);
+    const icons = {
+      1: "💵", // Argent pour acheter un repas
+      2: "🔥", // Feu pour survivre
+      3: "🏠", // Logement contre service
+      4: "🎤", // Micro pour faire de la musique
+      5: "🎼", // Signature d’un contrat avec Booba
+      6: "🎧", // Studio d'enregistrement
+      7: "📀", // Premier album
+      8: "🏆", // Disque d’or
+      9: "🌍", // Succès international
+      10: "👑", // Roi du rap
+    };
+
+    const bottomLineCells = document.querySelectorAll(".bottom-line");
+
+    // Déterminer le niveau de progression
+    let level;
+    if (score >= 0 && score < 20) {
+      level = 1;
+    } else if (score >= 20 && score < 40) {
+      level = 2;
+    } else if (score >= 40 && score < 60) {
+      level = 3;
+    } else if (score >= 60 && score < 80) {
+      level = 4;
+    } else if (score >= 80 && score < 100) {
+      level = 5;
+    } else if (score >= 100 && score < 120) {
+      level = 6;
+    } else if (score >= 120 && score < 140) {
+      level = 7;
+    } else if (score >= 140 && score < 160) {
+      level = 8;
+    } else if (score >= 160 && score < 180) {
+      level = 9;
+    } else {
+      level = 10;
     }
+
+    // Mettre à jour le texte affiché
+    typeWriter(levels[level], "story-text", 100);
+
+    // Changer les icônes des cellules en fonction du niveau
+    bottomLineCells.forEach((cell) => {
+      cell.textContent = icons[level] || "⭐"; // Icône par défaut si non définie
+    });
   }
 
-  // Fonction appelée lorsque des lignes sont complétées
-  function linesCompleted(nbLignes) {
-    linesCleared += nbLignes;
-    let newLevel = Math.floor(linesCleared / 10) + 1;
+  function typeWriter(text, elementId, speed = 100) {
+    let i = 0;
+    let targetElement = document.getElementById(elementId);
+    targetElement.textContent = "";
 
-    if (newLevel > level && levels[newLevel]) {
-      level = newLevel;
-      afficherHistoire(level);
-      localStorage.setItem("tetrisLevel", level);
-      localStorage.setItem("tetrisLines", linesCleared);
-    }
-  }
-
-  // Réinitialisation de la progression
-  function resetProgression() {
-    localStorage.removeItem("tetrisLevel");
-    localStorage.removeItem("tetrisLines");
-    level = 1;
-    linesCleared = 0;
+    let interval = setInterval(() => {
+      if (i < text.length) {
+        targetElement.textContent += text[i];
+        i++;
+      } else {
+        clearInterval(interval); // Arrête l'animation quand tout est affiché
+      }
+    }, speed);
   }
 
   // Intégration avec le jeu Tetris existant
@@ -669,6 +706,7 @@ function togglePause() {
       if (row.every((index) => squares[index]?.classList.contains("taken"))) {
         // Supprimer la ligne (effacer classes et contenu)
         controlSound("remove");
+        showStory(score);
         row.forEach((index) => {
           squares[index].classList.remove("taken", "block", ...letters);
           squares[index].textContent = "";
@@ -689,8 +727,7 @@ function togglePause() {
         }
 
         scoreDisplay.textContent = `score: ${(score += 10)}`;
-        dropFloatingBricks();
-        linesCompleted(1); // Appeler la fonction pour suivre la progression
+        dropFloatingBricks(); // Appeler la fonction pour suivre la progression
       }
     }
   }
@@ -754,11 +791,11 @@ function togglePause() {
   let lastFrameTime = performance.now();
   let frameCount = 0;
   let fps = 0;
-  const targetFrameTime = 1000 / 60; // 60 FPS = 16.67 ms par frame
+  const targetFrameTime = 1000 / 30; // 60 FPS = 16.67 ms par frame
 
   async function animate(time) {
     if (!isPaused) {
-      const deltaTime = time - lastFrameTime;
+      let deltaTime = time - lastFrameTime;
       // Si le temps écoulé depuis la dernière frame est inférieur à 16.67 ms, on attend
       if (deltaTime < targetFrameTime) {
         requestAnimationFrame(animate);
@@ -767,12 +804,11 @@ function togglePause() {
 
       frameCount++;
       lastFrameTime += targetFrameTime; // 🔥 Fixe un vrai intervalle constant entre les frames
-
+      fps = Math.round(1000 / deltaTime);
+      document.getElementById("fps-display").textContent = `FPS: ${fps}`;
       // Vérification et mise à jour du FPS toutes les secondes
-      if (time - lastFrameTime >= 1000) {
-        fps = frameCount;
-        frameCount = 0;
-        document.getElementById("fps-display").textContent = `FPS: ${fps}`;
+      if (deltaTime>=lastFrameTime) {
+        lastFrameTime = time-(deltaTime%targetFrameTime)
       }
 
       // Gérer la descente des Tetrominos
@@ -796,7 +832,6 @@ const tableBody = document.getElementById("scoreTableBody");
 
 document.addEventListener("DOMContentLoaded", function () {
   if (!tableBody) {
-    console.error("⛔ ERREUR : `scoreTableBody` introuvable dans l'HTML !");
     return;
   }
 
@@ -835,7 +870,6 @@ async function fetchScores(page) {
   try {
     const response = await fetch(`${apiBaseUrl}?page=${page}&limit=${limit}`);
     const scores = await response.json();
-    console.log("📊 Scores récupérés :", scores);
     displayScores(scores);
   } catch (error) {
     console.error("Erreur lors de la récupération des scores :", error);

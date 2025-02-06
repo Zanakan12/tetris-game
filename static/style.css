@@ -39,13 +39,16 @@ body {
 
 .bottom-line {
     animation: fireAnimation 2s infinite linear, glow 1s infinite alternate ease-in-out;
+    border-left: none !important;
+    border-right: none !important;
+    border: none important;
 }
 
 /* Tableau des scores */
 #scoreboard {
     position: absolute;
-    left: 20px;
-    top: 100px;
+    left: 620px;
+    top: 120px;
     width: 150px;
     padding: 10px;
     background: #5e3131;
@@ -87,7 +90,7 @@ body {
     margin-top: 5px;
     padding: 5px;
     border: none;
-    background-color: #007bff;
+    background-color: #ffdd00;
     color: white;
     cursor: pointer;
     border-radius: 4px;
@@ -106,7 +109,7 @@ body {
 /* Prochaines pièces (Tetris) */
 #next-pieces-container {
     position: absolute;
-    right: 20px;
+    right: 700px;
     top: 100px;
     display: flex;
     flex-direction: column;
@@ -309,4 +312,13 @@ body {
 .overlay.active {
     opacity: 1;
     visibility: visible;
+}
+/* ------------story-----------*/
+
+#information,#story-text{
+    position: absolute;
+    top : 30%;
+    left: 300px;
+    width: 200px;
+    border-radius: 10%;
 }
