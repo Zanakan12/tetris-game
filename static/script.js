@@ -13,6 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let lastDropTime = 0; // Dernier moment où un bloc est descendu
   let isPaused = true; // État du jeu
   let dropInterval = 500; // Intervalle de descente (en ms)
+  const scoreboard = document.getElementById("scoreboard");
+  const nextPiecesContainer = document.getElementById("next-pieces-container");
 
   // --- Sélection des éléments du DOM ---
   const grid = document.querySelector("#grid");
@@ -312,7 +314,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const square = squares[currentPosition + index];
       // Vérifier que la cellule n'est pas déjà prise
       if (!square.classList.contains("taken")) {
-        square.classList.add("block", currentLetter); // Ajoute la classe de la lettre
+        // square.classList.add("block", currentLetter); // Ajoute la classe de la lettre
         square.textContent = getTetrominoSymbol(currentLetter, "");
       }
     });
@@ -502,6 +504,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Fonction pour basculer l'affichage du menu pause
   function togglePause() {
     isPaused = !isPaused;
+    scoreboard.classList.add("overlay");
+    nextPiecesContainer.classList.add("overlay");
 
     if (isPaused) {
       pauseMenu.classList.add("active"); // Affiche le menu
@@ -516,21 +520,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
   const resumeButton = document.getElementById("resume-btn");
+
   resumeButton.addEventListener("click", () => {
+    nextPiecesContainer.classList.remove("overlay");
+    document.getElementById("scoreboard").classList.remove("overlay");
     pauseMenu.classList.toggle("active");
     isPaused = !isPaused;
     pauseButton.style.visibility = "visible";
     if (!isPaused) controlSound("play");
     if (!isPaused) startTimer();
-  });
-
-  // --- Contrôles clavier ---
-  document.addEventListener("keydown", (e) => {
-    if (isPaused) return; // Bloque les mouvements si le jeu est en pause
-    if (e.keyCode === 37) moveLeft();
-    else if (e.keyCode === 39) moveRight();
-    else if (e.keyCode === 38) rotate();
-    else if (e.keyCode === 40) moveDown();
   });
 
   // --- Bouton de réinitialisation ---
@@ -610,8 +608,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function resetGame() {
+    let echec =
+      "Dommage tu n'es qu'un simple humain, tu n'as pas pu sauver Damso de la misère";
     resetTimer();
     controlSound("stop");
+    typeWriter(echec, "story-text", 100);
     dropInterval = 500;
     scoreDisplay.textContent = `Score: ${(score = 0)}`;
     isPaused = true;
@@ -685,14 +686,19 @@ document.addEventListener("DOMContentLoaded", () => {
   function typeWriter(text, elementId, speed = 100) {
     let i = 0;
     let targetElement = document.getElementById(elementId);
+
+    // Assure-toi de bien vider l'élément AVANT de commencer
     targetElement.textContent = "";
 
-    let interval = setInterval(() => {
+    // Empêche plusieurs appels successifs
+    clearInterval(targetElement.typeWriterInterval);
+
+    targetElement.typeWriterInterval = setInterval(() => {
       if (i < text.length) {
         targetElement.textContent += text[i];
         i++;
       } else {
-        clearInterval(interval); // Arrête l'animation quand tout est affiché
+        clearInterval(targetElement.typeWriterInterval); // Arrête l'animation quand terminé
       }
     }, speed);
   }
@@ -789,29 +795,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Boucle d'animation ---
   let lastFrameTime = performance.now();
+  let fpsDisplay = document.getElementById("fps-display");
   let frameCount = 0;
+  let lastFpsUpdate = performance.now();
   let fps = 0;
-  const targetFrameTime = 1000 / 30; // 60 FPS = 16.67 ms par frame
+  const targetFrameTime = 1000 / 60; // 60 FPS = 16.67 ms par frame
 
-  async function animate(time) {
-    if (!isPaused) {
-      let deltaTime = time - lastFrameTime;
-      // Si le temps écoulé depuis la dernière frame est inférieur à 16.67 ms, on attend
-      if (deltaTime < targetFrameTime) {
-        requestAnimationFrame(animate);
-        return;
-      }
+  function animate(time) {
+    let deltaTime = time - lastFrameTime;
+    if (isPaused) {
+      requestAnimationFrame(animate);
+      return;
+    }
+    // 🔥 Assurer un timing stable à 60 FPS
+    if (deltaTime >= targetFrameTime) {
+      lastFrameTime = time - (deltaTime % targetFrameTime); // ✅ Correction anti-dérive temporelle
 
+      // 🔥 Calcul des FPS (mise à jour toutes les secondes)
       frameCount++;
-      lastFrameTime += targetFrameTime; // 🔥 Fixe un vrai intervalle constant entre les frames
-      fps = Math.round(1000 / deltaTime);
-      document.getElementById("fps-display").textContent = `FPS: ${fps}`;
-      // Vérification et mise à jour du FPS toutes les secondes
-      if (deltaTime>=lastFrameTime) {
-        lastFrameTime = time-(deltaTime%targetFrameTime)
+      if (time - lastFpsUpdate >= 1000) {
+        fps = frameCount;
+        frameCount = 0;
+        lastFpsUpdate = time;
+        fpsDisplay.textContent = `FPS: ${fps}`;
       }
 
-      // Gérer la descente des Tetrominos
+      // 🔥 Mettre à jour le jeu normalement (déplacement + descente)
       if (time - lastDropTime > dropInterval) {
         moveDown();
         lastDropTime = time;
@@ -820,6 +829,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     requestAnimationFrame(animate);
   }
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") moveLeft();
+    else if (e.key === "ArrowRight") moveRight();
+    else if (e.key === "ArrowUp") rotate();
+    else if (e.key === "ArrowDown") moveDown();
+  });
 
   // Lancement de l'animation
   requestAnimationFrame(animate);
@@ -831,25 +846,36 @@ const limit = 5;
 const tableBody = document.getElementById("scoreTableBody");
 
 document.addEventListener("DOMContentLoaded", function () {
-  if (!tableBody) {
-    return;
+  const prevButton = document.getElementById("prevPage");
+  const nextButton = document.getElementById("nextPage");
+  let currentPage = 1;
+  let totalPages = 5; // Remplace ça par le nombre réel de pages si connu
+
+  nextButton.disabled = true;
+  function updatePaginationButtons() {
+    prevButton.disabled = currentPage === 1;
+    nextButton.disabled = currentPage >= totalPages;
   }
 
-  // Gestion des boutons de pagination
-  document.getElementById("prevPage").addEventListener("click", () => {
+  prevButton.addEventListener("click", () => {
     if (currentPage > 1) {
       currentPage--;
       fetchScores(currentPage);
+      updatePaginationButtons();
     }
   });
 
-  document.getElementById("nextPage").addEventListener("click", () => {
-    currentPage++;
-    fetchScores(currentPage);
+  nextButton.addEventListener("click", () => {
+    if (currentPage < totalPages) {
+      currentPage++;
+      fetchScores(currentPage);
+      updatePaginationButtons();
+    }
   });
 
-  // Charger les scores initiaux
+  // Charger les scores initiaux et mettre à jour les boutons
   fetchScores(currentPage);
+  updatePaginationButtons();
 });
 
 async function submitScore(name, score, time) {
@@ -962,3 +988,71 @@ function controlSound(action) {
       break;
   }
 }
+// ------BackGround-------
+
+document.addEventListener("DOMContentLoaded", () => {
+  const bg = document.getElementById("tetromino-background");
+
+  // Définition des Tétrominos (formes en matrices)
+  const tetrominos = [
+    [[1, 1, 1, 1]], // I
+    [
+      [1, 1],
+      [1, 1],
+    ], // O
+    [
+      [1, 1, 1],
+      [0, 1, 0],
+    ], // T
+    [
+      [1, 1, 0],
+      [0, 1, 1],
+    ], // Z
+    [
+      [0, 1, 1],
+      [1, 1, 0],
+    ], // S
+    [
+      [1, 1, 1],
+      [1, 0, 0],
+    ], // L
+    [
+      [1, 1, 1],
+      [0, 0, 1],
+    ], // J
+  ];
+
+  function createTetromino() {
+    const tetromino = document.createElement("div");
+    tetromino.classList.add("tetromino");
+
+    const shape = tetrominos[Math.floor(Math.random() * tetrominos.length)];
+
+    shape.forEach((row, y) => {
+      row.forEach((cell, x) => {
+        if (cell) {
+          const block = document.createElement("div");
+          block.classList.add("block");
+          block.style.backgroundColor = `hsl(${Math.random() * 360}, 80%, 60%)`;
+          block.style.gridColumn = x + 1;
+          block.style.gridRow = y + 1;
+          tetromino.appendChild(block);
+        }
+      });
+    });
+
+    // Position aléatoire
+    tetromino.style.left = `${Math.random() * window.innerWidth}px`;
+    tetromino.style.top = "-50px";
+    tetromino.style.animationDuration = `${Math.random() * 5 + 5}s`;
+
+    bg.appendChild(tetromino);
+
+    // Supprime après l'animation
+    tetromino.addEventListener("animationend", () => {
+      tetromino.remove();
+    });
+  }
+
+  setInterval(createTetromino, 700); // Crée un Tétromino toutes les 0.7s
+});
