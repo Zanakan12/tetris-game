@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let lastDropTime = 0; // Dernier moment où un bloc est descendu
   let isPaused = true; // État du jeu
   let dropInterval = 500; // Intervalle de descente (en ms)
+  controlSound("play");
   const scoreboard = document.getElementById("scoreboard");
   const nextPiecesContainer = document.getElementById("next-pieces-container");
 
@@ -519,6 +520,7 @@ document.addEventListener("DOMContentLoaded", () => {
       controlSound("play"); // Joue le son de reprise
     }
   }
+
   const resumeButton = document.getElementById("resume-btn");
 
   resumeButton.addEventListener("click", () => {
@@ -531,9 +533,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!isPaused) startTimer();
   });
 
+const tryAgain = "réessaie encore tu voir l'avenir sur les cases à droite";
   // --- Bouton de réinitialisation ---
   const resetButton = document.getElementById("reset-btn");
   resetButton.addEventListener("click", () => {
+    isPaused = !isPaused;
+    typeWriter(tryAgain,"story-text",100);
     dropInterval = 500;
     controlSound("stop");
     resetTimer();
@@ -543,10 +548,27 @@ document.addEventListener("DOMContentLoaded", () => {
     pauseMenu.classList.remove("active");
     pauseMenu.classList.add("hidden");
 
-    isPaused = !isPaused;
+    
     pauseButton.style.visibility = "visible";
-    controlSound("play");
   });
+
+  const settingMenu = document.getElementById("setting-main");
+  const settingButton = document.getElementById("setting-btn");
+  const doneButton = document.getElementById("done")
+
+  settingButton.addEventListener("click", () => {
+    pauseMenu.classList.remove("active");
+    pauseMenu.classList.add("hidden");
+    settingMenu.style.visibility = "visible";
+  });
+ 
+  doneButton.addEventListener("click", ()=>{
+    pauseMenu.classList.remove("hidden");
+    pauseMenu.classList.add("active");
+    settingMenu.style.visibility = "hidden";
+    settingMenu.classList.add("active");
+  });
+ 
 
   const quitButton = document.getElementById("quit-btn");
   quitButton.addEventListener("click", () => {
@@ -597,6 +619,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ); // Ajout de `{ once: true }` pour éviter plusieurs écoutes
     });
   }
+
   const buttonPromptCancel = document.getElementById("btn-cancel");
   buttonPromptCancel.addEventListener("click", () => {
     closePrompt();
@@ -615,7 +638,6 @@ document.addEventListener("DOMContentLoaded", () => {
     typeWriter(echec, "story-text", 100);
     dropInterval = 500;
     scoreDisplay.textContent = `Score: ${(score = 0)}`;
-    isPaused = true;
   }
 
   // --- Suppression des lignes et gestion des briques flottantes ---
@@ -799,7 +821,18 @@ document.addEventListener("DOMContentLoaded", () => {
   let frameCount = 0;
   let lastFpsUpdate = performance.now();
   let fps = 0;
+  let showFps = false;
   const targetFrameTime = 1000 / 60; // 60 FPS = 16.67 ms par frame
+
+  fpsCheckbox = document.getElementsByName("fps")
+  fpsCheckbox.forEach((checkbox) => {
+    checkbox.addEventListener("change", function () {
+      showFps = checkbox.checked; // Mettre à jour la variable
+      if (!showFps) {
+        fpsDisplay.textContent = ""; // Effacer le texte quand c'est désactivé
+      }
+    });
+  });
 
   function animate(time) {
     let deltaTime = time - lastFrameTime;
@@ -817,7 +850,8 @@ document.addEventListener("DOMContentLoaded", () => {
         fps = frameCount;
         frameCount = 0;
         lastFpsUpdate = time;
-        fpsDisplay.textContent = `FPS: ${fps}`;
+        if (showFps)fpsDisplay.textContent = `FPS: ${fps}`;
+        
       }
 
       // 🔥 Mettre à jour le jeu normalement (déplacement + descente)
@@ -963,6 +997,17 @@ function resetTimer() {
 let sound = new Audio("/static/song/base_sound.mp3");
 sound.loop = true;
 
+let soundbox = document.getElementsByName("sound");
+  soundbox.forEach((checkbox) => {
+    checkbox.addEventListener("change", function () {
+      if (checkbox.checked) {
+        controlSound("play");
+      } else {
+        controlSound("stop");
+      }
+    });
+  });
+  
 function controlSound(action) {
   switch (action) {
     case "play":
@@ -989,9 +1034,9 @@ function controlSound(action) {
   }
 }
 // ------BackGround-------
-
 document.addEventListener("DOMContentLoaded", () => {
   const bg = document.getElementById("tetromino-background");
+  let intervalId = null; // Variable globale pour gérer setInterval
 
   // Définition des Tétrominos (formes en matrices)
   const tetrominos = [
@@ -1054,5 +1099,31 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  setInterval(createTetromino, 700); // Crée un Tétromino toutes les 0.7s
+  function stopTetrominoes() {
+    document.querySelectorAll(".tetromino").forEach((tetromino) => {
+      tetromino.remove();
+    });
+  }
+
+  function BackGroundManage() {
+    let backgroundbox = document.getElementsByName("background");
+
+    backgroundbox.forEach((checkbox) => {
+      checkbox.addEventListener("change", function () {
+        if (checkbox.checked) {
+          if (!intervalId) {
+            intervalId = setInterval(createTetromino, 700); // Démarrer seulement si aucun intervalle actif
+          }
+        } else {
+          if (intervalId) {
+            clearInterval(intervalId); // Arrête l'animation
+            intervalId = null; // Réinitialise
+          }
+          stopTetrominoes(); // Supprime les tétriminos affichés
+        }
+      });
+    });
+  }
+
+  BackGroundManage();
 });

@@ -2,8 +2,8 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tetris</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- pour gerer la media queries -->
+    <title class="title">Tetris</title>
     <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
@@ -18,8 +18,8 @@
         </div>
     </div>
 
-    <h1>Tetris</h1>
-    <div id="fps-display">FPS: 0</div>
+    <h1 class="tetris-title">TETRIS</h1>
+    <div id="fps-display"></div>
     <div id="rank"></div>
     <div id="information">
         <p id="story-text">L'histoire commencera ici...
@@ -38,6 +38,30 @@
             <button id="setting-btn">Setting</button>
             <button id="quit-btn">Quit</button> <!-- Optionnel -->
         </div>
+    </div>
+
+    <div id="setting-main">
+        <h3>SETTING</h3>
+        <p>SOUND 
+            <label class="switch">
+                <input type="checkbox" name="sound">
+                <span class="slider round"></span>
+              </label>
+              
+        </p>
+        <p>SHOW BACKGROUND
+            <label class="switch">
+                <input type="checkbox" name ="background">
+                <span class="slider round"></span>
+              </label>              
+        </p>
+        <p>DISPLAY FPS
+            <label class="switch">
+                <input type="checkbox" name="fps">
+                <span class="slider round"></span>
+            </label>
+        </p>
+        <button id="done">DONE</button>
     </div>
 
     <div id="fire-container"></div>

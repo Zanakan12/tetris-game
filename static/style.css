@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 /* Style général */
 body {
     font-family: Arial, sans-serif;
@@ -50,11 +51,11 @@ body {
 /* Tableau des scores */
 #scoreboard {
     position: absolute;
-    left: 620px;
-    top: 120px;
+    left: 304px;
+    top: 182px;
     width: 150px;
     padding: 10px;
-    background: #5e3131;
+    background: #8d8e8d;
     border-radius: 8px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 }
@@ -108,17 +109,16 @@ body {
     width: auto; /* Permet aux boutons de s'ajuster à leur contenu */
     margin: 5px; /* Ajoute un peu d'espacement */
 }
+#prevPage:hover,#nextPage:hover{
+    background: rgb(255, 238, 0);
 
-/* Boutons Pause et Reset */
-#pause-btn, #reset-btn {
-    font-size: 30px !important;
 }
 
 /* Prochaines pièces (Tetris) */
 #next-pieces-container {
     position: absolute;
-    right: 700px;
-    top: 100px;
+    right: 450px;
+    top: 157px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -170,7 +170,7 @@ body {
 }
 
 /* --- MENU DE PAUSE --- */
-#pause-menu {
+#pause-menu{
     position: fixed;
     top: 0;
     left: 0;
@@ -183,7 +183,6 @@ body {
     align-items: center;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease-in-out, visibility 0.3s;
 }
 
 .menu-content {
@@ -212,7 +211,6 @@ body {
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
-    transition: 0.3s;
 }
 #pause-menu button {
     display: block; /* Assure que chaque bouton prend toute la largeur */
@@ -253,6 +251,24 @@ body {
 
 #pause-menu button:hover{
     background: #b38900;
+}
+
+#setting-main{
+    position: fixed;
+    top: 35%;
+    left: 42%;
+    width: 304px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    flex-direction: column; /* S'assurer que les éléments s'empilent */
+    align-items: flex-start; /* Aligner les éléments à gauche */
+    padding: 10px;
+    border-radius: 10px;
+    visibility: hidden;
+}
+#setting-main button{
+    align-self: center !important;
 }
 /*-------------------------------------*/
 
@@ -310,7 +326,6 @@ body {
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
-    transition: 0.3s;
 }
 
 .btn-confirm {
@@ -341,8 +356,8 @@ body {
 
 #information,#story-text{
     position: absolute;
-    top : 40%;
-    left: 300px;
+    top: 180px;
+    left: 140px;
     width: 200px;
     border-radius: 10%;
 }
@@ -382,4 +397,104 @@ body {
       transform: translateY(110vh);
     }
   }
+  /*----------------Switch bouton-------------------*/
+  /* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 42px;
+    height:20px;
+  }
   
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 17px;
+    width: 15px;
+    left: 1px;
+    bottom: 1px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #f3cd21;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius:20px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+  /* title */
+
+  .tetris-title {
+    font-family: 'Press Start 2P', cursive; /* Police rétro */
+    font-size: 60px;
+    text-align: center;
+    letter-spacing: 5px;
+    color: #292929;
+    text-shadow: 
+        -3px -3px 0 #ff0000,  
+        3px -3px 0 #00ff00,  
+        -3px 3px 0 #0000ff,  
+        3px 3px 0 #ffcc00; /* Effet néon pixelisé */
+}
+
+/* responsivity */
+
+@media (max-width: 1247px) {
+    #next-pieces-container {
+        position: absolute;
+        top: 16vw;
+        right: 25vw; 
+    }
+    
+    #scoreboard{
+            position: absolute;
+            top: 18,5vw;
+            left: 17vw; 
+    }
+
+    #story-text{
+        position: absolute;
+        top: 20vw;
+        left: 1vw;
+    }
+}
+
+
