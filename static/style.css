@@ -27,7 +27,7 @@ body {
     align-items: center;
     width: 30px;
     height: 30px;
-    background-color: #333;
+    background-color: #717171;
     font-size: 30px;
 }
 
@@ -57,7 +57,6 @@ body {
     padding: 10px;
     background: #8d8e8d;
     border-radius: 8px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 #scoreboard table {
@@ -66,7 +65,7 @@ body {
 }
 
 #scoreboard th, #scoreboard td {
-    border: 1px solid #211f1f;
+    border: 1px solid #6b6b6b;
     padding: 1px;
     text-align: center;
 }
@@ -170,6 +169,21 @@ body {
 }
 
 /* --- MENU DE PAUSE --- */
+
+#pause-toggle-btn {
+    position: absolute;
+    top:800px;
+    right:490px;
+    width: 50px; /* Set width to fit the image */
+    height: 50px; /* Adjust height */
+    background-size: contain; /* Ensure the SVG fits inside */
+    background-repeat: no-repeat;
+    background-position: center;
+    /* background-color: transparent; Optional: Ensure no conflicting background */
+    border-radius: 10%; /* Optional: Remove button border */
+    cursor: pointer; /* Make it clickable */
+}
+
 #pause-menu{
     position: fixed;
     top: 0;
@@ -255,8 +269,8 @@ body {
 
 #setting-main{
     position: fixed;
-    top: 35%;
-    left: 42%;
+    top: 350px;
+    left: 550px;
     width: 304px;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(5px);
@@ -266,6 +280,7 @@ body {
     padding: 10px;
     border-radius: 10px;
     visibility: hidden;
+
 }
 #setting-main button{
     align-self: center !important;
@@ -357,8 +372,9 @@ body {
 #information,#story-text{
     position: absolute;
     top: 180px;
-    left: 140px;
+    left: 145px;
     width: 200px;
+    background-color: #888;
     border-radius: 10%;
 }
 /* -----------background--------------- */
@@ -422,8 +438,6 @@ body {
     right: 0;
     bottom: 0;
     background-color: #ccc;
-    -webkit-transition: .4s;
-    transition: .4s;
   }
   
   .slider:before {
@@ -434,8 +448,6 @@ body {
     left: 1px;
     bottom: 1px;
     background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
   }
   
   input:checked + .slider {
@@ -467,12 +479,12 @@ body {
     font-size: 60px;
     text-align: center;
     letter-spacing: 5px;
-    color: #292929;
+    color: #572f58;
     text-shadow: 
         -3px -3px 0 #ff0000,  
-        3px -3px 0 #00ff00,  
+        3px -3px 0 #ffcc00,
         -3px 3px 0 #0000ff,  
-        3px 3px 0 #ffcc00; /* Effet néon pixelisé */
+        3px 3px 0 #d000ff; /* Effet néon pixelisé */
 }
 
 /* responsivity */
@@ -494,6 +506,10 @@ body {
         position: absolute;
         top: 20vw;
         left: 1vw;
+    }
+    #pause-toggle-btn {
+        position: absolute;
+        right: 27vw; 
     }
 }
 

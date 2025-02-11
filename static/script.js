@@ -484,6 +484,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Gestion de la pause / reprise ---
   const pauseButton = document.getElementById("pause-toggle-btn");
+  pauseButton.style.backgroundImage = "url('static/image/playBouton.svg')";
   // Quand on appuie sur "P", on met en pause/reprend
   document.addEventListener("keydown", (event) => {
     if (event.key.toLowerCase() === "p") {
@@ -493,7 +494,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Quand on clique sur le bouton Pause/Reprendre
   pauseButton.addEventListener("click", () => {
-    if ((pauseButton.textContent = "Play")) pauseButton.textContent = "Pause";
+    pauseButton.style.backgroundImage = "url('static/image/pauseBouton.svg')";
     !isPaused ? togglePause() : (isPaused = !isPaused);
     controlSound("play");
     startTimer();
@@ -533,12 +534,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!isPaused) startTimer();
   });
 
-const tryAgain = "réessaie encore tu voir l'avenir sur les cases à droite";
+  const tryAgain = "réessaie encore tu voir l'avenir sur les cases à droite";
   // --- Bouton de réinitialisation ---
   const resetButton = document.getElementById("reset-btn");
   resetButton.addEventListener("click", () => {
     isPaused = !isPaused;
-    typeWriter(tryAgain,"story-text",100);
+    typeWriter(tryAgain, "story-text", 100);
     dropInterval = 500;
     controlSound("stop");
     resetTimer();
@@ -547,28 +548,26 @@ const tryAgain = "réessaie encore tu voir l'avenir sur les cases à droite";
     scoreDisplay.textContent = "Score: 0";
     pauseMenu.classList.remove("active");
     pauseMenu.classList.add("hidden");
-
-    
+    pauseButton.style.backgroundImage = "url('static/image/playBouton.svg')";
     pauseButton.style.visibility = "visible";
   });
 
   const settingMenu = document.getElementById("setting-main");
   const settingButton = document.getElementById("setting-btn");
-  const doneButton = document.getElementById("done")
+  const doneButton = document.getElementById("done");
 
   settingButton.addEventListener("click", () => {
     pauseMenu.classList.remove("active");
     pauseMenu.classList.add("hidden");
     settingMenu.style.visibility = "visible";
   });
- 
-  doneButton.addEventListener("click", ()=>{
+
+  doneButton.addEventListener("click", () => {
     pauseMenu.classList.remove("hidden");
     pauseMenu.classList.add("active");
     settingMenu.style.visibility = "hidden";
     settingMenu.classList.add("active");
   });
- 
 
   const quitButton = document.getElementById("quit-btn");
   quitButton.addEventListener("click", () => {
@@ -580,8 +579,6 @@ const tryAgain = "réessaie encore tu voir l'avenir sur les cases à droite";
       squares[i].classList.remove("block", "taken", ...letters);
       squares[i].textContent = "";
     }
-
-    pauseButton.textContent = "Pause";
     resetButton.style.display = "";
     startNewTetromino();
   }
@@ -705,7 +702,7 @@ const tryAgain = "réessaie encore tu voir l'avenir sur les cases à droite";
     });
   }
 
-  function typeWriter(text, elementId, speed = 100) {
+  function typeWriter(text, elementId, speed = 150) {
     let i = 0;
     let targetElement = document.getElementById(elementId);
 
@@ -718,6 +715,7 @@ const tryAgain = "réessaie encore tu voir l'avenir sur les cases à droite";
     targetElement.typeWriterInterval = setInterval(() => {
       if (i < text.length) {
         targetElement.textContent += text[i];
+        controlSound("typeWriter");
         i++;
       } else {
         clearInterval(targetElement.typeWriterInterval); // Arrête l'animation quand terminé
@@ -824,7 +822,7 @@ const tryAgain = "réessaie encore tu voir l'avenir sur les cases à droite";
   let showFps = false;
   const targetFrameTime = 1000 / 60; // 60 FPS = 16.67 ms par frame
 
-  fpsCheckbox = document.getElementsByName("fps")
+  fpsCheckbox = document.getElementsByName("fps");
   fpsCheckbox.forEach((checkbox) => {
     checkbox.addEventListener("change", function () {
       showFps = checkbox.checked; // Mettre à jour la variable
@@ -850,8 +848,7 @@ const tryAgain = "réessaie encore tu voir l'avenir sur les cases à droite";
         fps = frameCount;
         frameCount = 0;
         lastFpsUpdate = time;
-        if (showFps)fpsDisplay.textContent = `FPS: ${fps}`;
-        
+        if (showFps) fpsDisplay.textContent = `FPS: ${fps}`;
       }
 
       // 🔥 Mettre à jour le jeu normalement (déplacement + descente)
@@ -998,16 +995,16 @@ let sound = new Audio("/static/song/base_sound.mp3");
 sound.loop = true;
 
 let soundbox = document.getElementsByName("sound");
-  soundbox.forEach((checkbox) => {
-    checkbox.addEventListener("change", function () {
-      if (checkbox.checked) {
-        controlSound("play");
-      } else {
-        controlSound("stop");
-      }
-    });
+soundbox.forEach((checkbox) => {
+  checkbox.addEventListener("change", function () {
+    if (checkbox.checked) {
+      controlSound("play");
+    } else {
+      controlSound("stop");
+    }
   });
-  
+});
+
 function controlSound(action) {
   switch (action) {
     case "play":
@@ -1031,8 +1028,12 @@ function controlSound(action) {
       let down = new Audio("/static/song/down.mp3");
       down.play();
       break;
+    case "typeWriter":
+      let typeWriter = new Audio("/static/song/typewriter.wav");
+      typeWriter.play();
   }
 }
+
 // ------BackGround-------
 document.addEventListener("DOMContentLoaded", () => {
   const bg = document.getElementById("tetromino-background");
