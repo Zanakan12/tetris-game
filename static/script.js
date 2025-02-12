@@ -10,12 +10,45 @@ function wait(ms) {
 document.addEventListener("DOMContentLoaded", () => {
   // --- Variables du jeu ---
   let score = 0;
+  let lives = 3;
   let lastDropTime = 0; // Dernier moment où un bloc est descendu
   let isPaused = true; // État du jeu
   let dropInterval = 500; // Intervalle de descente (en ms)
-  controlSound("play");
   const scoreboard = document.getElementById("scoreboard");
   const nextPiecesContainer = document.getElementById("next-pieces-container");
+  //const liveDisplay = document.getElementById("lives");
+
+  function manageLives(lives) {
+    let liveDisplay = document.getElementById("lives");
+    if (!liveDisplay) return console.error("❌ liveDisplay not found!");
+
+    liveDisplay.innerHTML = ""; // Clear previous lives
+
+    let maxLives = 3;
+
+    for (let i = 0; i < maxLives; i++) {
+      let color = i < lives ? "red" : "gray"; // Active = Red, Lost = Gray
+
+      let svgHeart = `
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="${color}" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+          `;
+
+      liveDisplay.innerHTML += svgHeart;
+    }
+  }
+
+  manageLives(lives);
+
+  function wallTouch() {
+    console.log("in the touch");
+    if (squares[currentPosition].classList.contains("wall")) {
+      console.log("in the if");
+      lives--;
+      manageLives(lives);
+    }
+  }
 
   // --- Sélection des éléments du DOM ---
   const grid = document.querySelector("#grid");
@@ -33,6 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
     cell.textContent = "🧱";
     grid.appendChild(cell);
   }
+
   const squares = Array.from(document.querySelectorAll("#grid div"));
   const width = 10;
 
@@ -83,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const letters = Object.keys(customTetrominoes);
-  let currentPosition = 4;
+  let currentPosition = 3;
   let currentRotation = 0;
   let random = Math.floor(Math.random() * letters.length);
   let currentLetter = letters[random];
@@ -91,150 +125,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Définition des maps ---
   const maps = [
-    // Map 1 : Bordures latérales pleines
+    // map medium
     [
-      ...Array(10).fill(1), // Bordure du haut
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      0,
-      0,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      1,
-      1,
-      0,
-      0,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      ...Array(10).fill(0), // Bordure du bas
+      0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0,
+      0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0,
+      0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ],
-
-    // Map 2 : Colonnes au centre
+    // map hard
     [
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      ...Array(10).fill(0), // Lignes normales
-    ],
-
-    // Map 3 : Mur de trous aléatoires
-    [
-      1,
-      1,
-      0,
-      1,
-      1,
-      0,
-      1,
-      0,
-      0,
-      1,
-      1,
-      0,
-      1,
-      1,
-      0,
-      0,
-      1,
-      0,
-      0,
-      1,
-      1,
-      1,
-      0,
-      1,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      1,
-      1,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      ...Array(10).fill(0),
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ],
   ];
 
@@ -242,8 +153,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectedMap = maps[mapIndex];
     for (let i = 0; i < selectedMap.length; i++) {
       if (selectedMap[i] === 1) {
-        squares[i].classList.add("obstacle");
-        squares[i].textContent = "🧱"; // Mur fixe
+        squares[i].classList.add("wall");
+        squares[i].textContent = "💠"; // Mur fixe
       }
     }
   }
@@ -345,10 +256,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!isCollision) {
       currentPosition = newPosition;
     }
-
-    draw();
-    freeze();
     endGame();
+    draw();
+    wallTouch();
+    freeze();
   }
 
   let freezeDelay = false;
@@ -393,8 +304,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!isAtLeftEdge) {
       const newPosition = currentPosition - 1;
-      const isCollision = current.some((index) =>
+      let isCollision = current.some((index) =>
         squares[newPosition + index].classList.contains("taken")
+      );
+
+      isCollision = current.some((index) =>
+        squares[newPosition].classList.contains("obstacle")
       );
 
       if (!isCollision) {
@@ -416,8 +331,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!isAtRightEdge) {
       const newPosition = currentPosition + 1;
-      const isCollision = current.some((index) =>
-        squares[newPosition + index].classList.contains("taken")
+      const isCollision = current.some(
+        (index) => squares[newPosition + index].classList.contains("taken")
       );
 
       if (!isCollision) {
@@ -452,7 +367,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const isValidRotation = next.every(
       (index) =>
         squares[currentPosition + index] && // Vérifie que la cellule existe
-        !squares[currentPosition + index].classList.contains("taken") // Vérifie qu'elle n'est pas prise
+        !squares[currentPosition + index].classList.contains("taken")
     );
 
     if (isValidRotation) {
@@ -526,11 +441,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   resumeButton.addEventListener("click", () => {
     nextPiecesContainer.classList.remove("overlay");
-    document.getElementById("scoreboard").classList.remove("overlay");
+    scoreboard.classList.remove("overlay");
     pauseMenu.classList.toggle("active");
     isPaused = !isPaused;
     pauseButton.style.visibility = "visible";
-    if (!isPaused) controlSound("play");
     if (!isPaused) startTimer();
   });
 
@@ -546,6 +460,8 @@ document.addEventListener("DOMContentLoaded", () => {
     resetGrid();
     score = 0;
     scoreDisplay.textContent = "Score: 0";
+    nextPiecesContainer.classList.remove("overlay");
+    scoreboard.classList.remove("overlay");
     pauseMenu.classList.remove("active");
     pauseMenu.classList.add("hidden");
     pauseButton.style.backgroundImage = "url('static/image/playBouton.svg')";
@@ -588,7 +504,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (
       current.some((index) =>
         squares[currentPosition + index].classList.contains("taken")
-      )
+      ) ||
+      lives < 1
     ) {
       pauseTimer();
       resetGrid();
@@ -596,6 +513,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (playerName) {
           submitScore(playerName, score, timer);
         }
+        lives -= 1;
+        manageLives(lives);
         resetGame();
       });
     }

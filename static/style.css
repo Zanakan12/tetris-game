@@ -48,6 +48,7 @@ body {
     border: none important;
 }
 
+
 /* Tableau des scores */
 #scoreboard {
     position: absolute;
@@ -514,3 +515,11 @@ body {
 }
 
 
+/* Lives */
+
+#lives{
+    position: absolute;
+    top: 800px;
+    left: 370px;
+    font-size: 40px;
+}
