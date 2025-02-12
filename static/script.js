@@ -21,11 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const nextMap = document.getElementById("nextMap");
   const map = document.getElementById("map");
 
-  map.textContent = "collisé";
   prevMap.style.backgroundImage = "url('static/image/prevMap.svg')";
   nextMap.style.backgroundImage = "url('static/image/nextMap.svg')";
-
-  prevMap.addEventListener("click", () => {});
 
   function manageLives(lives) {
     let liveDisplay = document.getElementById("lives");
@@ -164,9 +161,14 @@ document.addEventListener("DOMContentLoaded", () => {
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ],
   };
+  const mapsName = Object.keys(maps);
+
+  let mapPosition = 0;
+  loadMap(maps.collise);
+  map.textContent = mapsName[mapPosition];
 
   function loadMap(mapIndex) {
-    const selectedMap = maps.collise;
+    const selectedMap = mapIndex;
     for (let i = 0; i < selectedMap.length; i++) {
       if (selectedMap[i] === 1) {
         squares[i].classList.add("wall");
@@ -174,6 +176,35 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   }
+
+  prevMap.addEventListener("click", () => {
+    resetGrid();
+    if (mapPosition > 0) {
+      mapPosition--;
+      map.textContent = mapsName[mapPosition];
+      for (let key in maps) {
+        console.log(key)
+        if (key === mapsName[mapPosition]) {
+          loadMap(maps[key]);
+          break;
+        }
+      }
+    }
+  });
+
+  nextMap.addEventListener("click", () => {
+    resetGrid();
+    if (mapPosition < 2) {
+      mapPosition++;
+      map.textContent = mapsName[mapPosition];
+      for (let key in maps) {
+        if (key === mapsName[mapPosition]) {
+          loadMap(maps[key]);
+          break;
+        }
+      }
+    }
+  });
 
   document.getElementById("change-map-btn").addEventListener("click", () => {
     let newMapIndex = "collise";
