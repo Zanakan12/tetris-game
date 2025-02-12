@@ -16,7 +16,19 @@ document.addEventListener("DOMContentLoaded", () => {
   let dropInterval = 500; // Intervalle de descente (en ms)
   const scoreboard = document.getElementById("scoreboard");
   const nextPiecesContainer = document.getElementById("next-pieces-container");
-  //const liveDisplay = document.getElementById("lives");
+
+  const prevMap = document.getElementById("prevMap");
+  const nextMap = document.getElementById("nextMap");
+  const map1 = document.getElementById("map1");
+  const map2 = document.getElementById("map2");
+  const map3 = document.getElementById("map3");
+
+  prevMap.style.backgroundImage ="url('static/image/prevMap.svg')";
+  nextMap.style.backgroundImage ="url('static/image/nextMap.svg')";
+
+  map1.style.backgroundImage ="url('static/image/mapSelect.svg')";
+  map2.style.backgroundImage ="url('static/image/mapSelect.svg')";
+  map3.style.backgroundImage ="url('static/image/mapSelect.svg')";
 
   function manageLives(lives) {
     let liveDisplay = document.getElementById("lives");
@@ -285,7 +297,7 @@ document.addEventListener("DOMContentLoaded", () => {
             current.forEach((index) =>
               squares[currentPosition + index]?.classList.add("taken")
             );
-            removeLine();
+            removeLine(); 
 
             startNewTetromino();
           }

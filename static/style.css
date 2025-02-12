@@ -286,6 +286,30 @@ body {
 #setting-main button{
     align-self: center !important;
 }
+
+#mapSelector {
+    display: flex;
+    flex-direction: row;
+    align-items: center; /* Alignement vertical des éléments */
+
+}
+
+#prevMap,#nextMap{
+    width: 25px; /* Adjust size as needed */
+    height: 20px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#map1,#map2,#map3 {
+    width: 40px; /* Adjust size as needed */
+    height: 50px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
 /*-------------------------------------*/
 
 /* Overlay pour l'effet de fond flouté */
@@ -438,7 +462,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc;
+    background-color: #000000;
   }
   
   .slider:before {
