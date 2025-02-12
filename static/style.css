@@ -302,13 +302,6 @@ body {
     background-repeat: no-repeat;
 }
 
-#map1,#map2,#map3 {
-    width: 40px; /* Adjust size as needed */
-    height: 50px;
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-}
 
 /*-------------------------------------*/
 

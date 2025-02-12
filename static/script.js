@@ -19,20 +19,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const prevMap = document.getElementById("prevMap");
   const nextMap = document.getElementById("nextMap");
-  const map1 = document.getElementById("map1");
-  const map2 = document.getElementById("map2");
-  const map3 = document.getElementById("map3");
+  const map = document.getElementById("map");
 
-  prevMap.style.backgroundImage ="url('static/image/prevMap.svg')";
-  nextMap.style.backgroundImage ="url('static/image/nextMap.svg')";
+  map.textContent = "collisé";
+  prevMap.style.backgroundImage = "url('static/image/prevMap.svg')";
+  nextMap.style.backgroundImage = "url('static/image/nextMap.svg')";
 
-  map1.style.backgroundImage ="url('static/image/mapSelect.svg')";
-  map2.style.backgroundImage ="url('static/image/mapSelect.svg')";
-  map3.style.backgroundImage ="url('static/image/mapSelect.svg')";
+  prevMap.addEventListener("click", () => {});
 
   function manageLives(lives) {
     let liveDisplay = document.getElementById("lives");
-    if (!liveDisplay) return console.error("❌ liveDisplay not found!");
 
     liveDisplay.innerHTML = ""; // Clear previous lives
 
@@ -54,9 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   manageLives(lives);
 
   function wallTouch() {
-    console.log("in the touch");
     if (squares[currentPosition].classList.contains("wall")) {
-      console.log("in the if");
       lives--;
       manageLives(lives);
     }
@@ -65,7 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- Sélection des éléments du DOM ---
   const grid = document.querySelector("#grid");
   const scoreDisplay = document.querySelector("#score");
-  // const rankDisplay = document.getElementById("rank");
   // --- Création de la grille (10x20 + 10 cellules invisibles pour les collisions) ---
   for (let i = 0; i < 200; i++) {
     const cell = document.createElement("div");
@@ -136,9 +129,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let current = customTetrominoes[currentLetter][currentRotation];
 
   // --- Définition des maps ---
-  const maps = [
+  const maps = {
     // map medium
-    [
+    collise: [
       0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0,
       0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0,
       0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -149,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ],
     // map hard
-    [
+    stadeFrance: [
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
@@ -159,10 +152,21 @@ document.addEventListener("DOMContentLoaded", () => {
       0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ],
-  ];
+
+    kaweni: [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1,
+      1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+  };
 
   function loadMap(mapIndex) {
-    const selectedMap = maps[mapIndex];
+    const selectedMap = maps.collise;
     for (let i = 0; i < selectedMap.length; i++) {
       if (selectedMap[i] === 1) {
         squares[i].classList.add("wall");
@@ -172,8 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   document.getElementById("change-map-btn").addEventListener("click", () => {
-    let newMapIndex = Math.floor(Math.random() * maps.length);
-    console.log(newMapIndex);
+    let newMapIndex = "collise";
     resetGrid(); // Réinitialiser la grille
     loadMap(newMapIndex); // Charger la nouvelle map
   });
@@ -297,7 +300,7 @@ document.addEventListener("DOMContentLoaded", () => {
             current.forEach((index) =>
               squares[currentPosition + index]?.classList.add("taken")
             );
-            removeLine(); 
+            removeLine();
 
             startNewTetromino();
           }
@@ -343,8 +346,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!isAtRightEdge) {
       const newPosition = currentPosition + 1;
-      const isCollision = current.some(
-        (index) => squares[newPosition + index].classList.contains("taken")
+      const isCollision = current.some((index) =>
+        squares[newPosition + index].classList.contains("taken")
       );
 
       if (!isCollision) {
