@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let lastDropTime = 0; // Dernier moment où un bloc est descendu
   let isPaused = true; // État du jeu
   let dropInterval = 500; // Intervalle de descente (en ms)
+  // ========== AlllConst============
   const scoreboard = document.getElementById("scoreboard");
   const nextPiecesContainer = document.getElementById("next-pieces-container");
   const resetButton = document.getElementById("reset-btn");
@@ -47,20 +48,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   manageLives(lives);
 
-  function trapTouch() {
-    const newPosition = currentPosition;
-    let livesLost = 0;
-
-    current.forEach((index) => {
-      const targetIndex = newPosition + index;
-      if (squares[targetIndex]?.classList.contains("trap")) {
-        squares[targetIndex].classList.remove("trap");
-        livesLost++;
-      }
-    });
-
-    if (livesLost > 0) {
-      lives -= livesLost;
+  function wallTouch() {
+    if (squares[currentPosition].classList.contains("wall")) {
+      lives--;
       manageLives(lives);
     }
   }
@@ -187,7 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const mapsName = Object.keys(maps);
 
   let mapPosition = 0;
-  loadMap(maps.resurection);
+  loadMap(maps.collise);
   resetButton.style.display = "block";
   map.textContent = mapsName[mapPosition];
 
@@ -196,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
     resetButton.style.display = "none";
     for (let i = 0; i < selectedMap.length; i++) {
       if (selectedMap[i] === 1) {
-        squares[i].classList.add("trap");
+        squares[i].classList.add("wall");
         squares[i].textContent = "💠"; // Mur fixe
       }
     }
@@ -217,8 +207,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   nextMap.addEventListener("click", () => {
-    if (mapPosition < 3) {
-      console.log(mapPosition);
+    if (mapPosition < 2) {
       resetGrid();
       mapPosition++;
       map.textContent = mapsName[mapPosition];
@@ -228,8 +217,6 @@ document.addEventListener("DOMContentLoaded", () => {
           break;
         }
       }
-    } else {
-      nextMap.style.display = "hidden";
     }
   });
 
@@ -329,9 +316,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!isCollision) {
       currentPosition = newPosition;
     }
-    trapTouch();
     endGame();
     draw();
+    wallTouch();
     freeze();
   }
 
@@ -565,7 +552,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function resetGrid() {
     isPaused = true;
     for (let i = 0; i < 200; i++) {
-      squares[i].classList.remove("block", "taken", "trap", ...letters);
+      squares[i].classList.remove("block", "taken", ...letters);
       squares[i].textContent = "";
     }
     resetButton.style.display = "";
@@ -581,13 +568,16 @@ document.addEventListener("DOMContentLoaded", () => {
       lives < 1
     ) {
       pauseTimer();
+      
       showPrompt().then((playerName) => {
         if (playerName) {
           submitScore(playerName, score, timer);
         }
+        lives -= 1;
+        manageLives(lives);
+        resetGrid();
+        resetGame();
       });
-      resetGrid();
-      resetGame();
     }
   }
 
@@ -617,17 +607,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function resetGame() {
-    lives = 3;
-    loadMap(maps[mapsName[0]]);
-    loadMap(maps[mapsName[mapPosition]]);
-    pauseButton.style.backgroundImage = "url('static/image/playBouton.svg')";
     let echec =
       "Dommage tu n'es qu'un simple humain, tu n'as pas pu sauver Damso de la misère";
     resetTimer();
     typeWriter(echec, "story-text", 100);
     dropInterval = 500;
     scoreDisplay.textContent = `Score: ${(score = 0)}`;
-    manageLives(lives);
   }
 
   // --- Suppression des lignes et gestion des briques flottantes ---
@@ -1026,6 +1011,8 @@ function controlSound(action) {
       typeWriter.play();
   }
 }
+
+// ------BackGround-------
 document.addEventListener("DOMContentLoaded", () => {
   const bg = document.getElementById("tetromino-background");
   let intervalId = null; // Variable globale pour gérer setInterval

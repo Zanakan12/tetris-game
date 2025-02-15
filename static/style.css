@@ -283,6 +283,20 @@ body {
     visibility: hidden;
 
 }
+#pause-menu{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+}
 #setting-main button{
     align-self: center !important;
 }
