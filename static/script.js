@@ -815,7 +815,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let showFps = false;
   const targetFrameTime = 1000 / 60; // 60 FPS = 16.67 ms par frame
 
-  fpsCheckbox = document.getElementsByName("fps");
+  const fpsCheckbox = document.getElementsByName("fps");
   fpsCheckbox.forEach((checkbox) => {
     checkbox.addEventListener("change", function () {
       showFps = checkbox.checked; // Mettre à jour la variable
