@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- pour gerer la media queries -->
-    <title class="title">Tetris</title>
-    <link rel="stylesheet" href="static/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title class="title">Tetris</title>
+  <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
     <!-- Boîte de prompt stylisée -->
@@ -13,7 +13,7 @@
             <h2>🏆 Entre ton nom de joueur :</h2>
             <input type="text" id="playerNameInput" placeholder="Ex: ShadowKiller">
             <br>
-            <button id="btn-confirm" class="btn-confirm" >OK</button>
+            <button id="btn-confirm" class="btn-confirm">OK</button>
             <button id="btn-cancel" class="btn-cancel">Annuler</button>
         </div>
     </div>
@@ -23,38 +23,38 @@
     <div id="rank"></div>
     <div id="lives"></div>
     <div id="information">
-        <p id="story-text">L'histoire commencera ici...
-        </p>
+        <p id="story-text">L'histoire commencera ici...</p>
     </div>
-    <!-- ✅ Ajout d’un bouton Pause accessible en jeu -->
+
+    <!-- Bouton pour mettre en pause/reprendre -->
     <button id="pause-toggle-btn"></button>
     <button id="change-map-btn">Changer de carte</button>
 
-    <!-- 🎮 Menu de pause -->
+    <!-- Menu de pause -->
     <div id="pause-menu" class="hidden">
         <div class="menu-content">
             <h2>Pause</h2>
             <button id="resume-btn">Resume</button>
             <button id="reset-btn">Restart</button>
             <button id="setting-btn">Setting</button>
-            <button id="quit-btn">Quit</button> <!-- Optionnel -->
+            <button id="quit-btn">Quit</button>
         </div>
     </div>
 
+    <!-- Menu des réglages -->
     <div id="setting-main">
         <h3>SETTING</h3>
         <p>SOUND 
             <label class="switch">
                 <input type="checkbox" name="sound" checked>
                 <span class="slider round"></span>
-              </label>
-              
+            </label>
         </p>
         <p>SHOW BACKGROUND
             <label class="switch">
-                <input type="checkbox" name ="background">
+                <input type="checkbox" name="background">
                 <span class="slider round"></span>
-              </label>              
+            </label>              
         </p>
         <p>DISPLAY FPS
             <label class="switch">
@@ -71,6 +71,7 @@
         <button id="done">DONE</button>
     </div>
 
+    <!-- La grille Tetris -->
     <div id="fire-container"></div>
     <div id="grid"></div>
     <div id="score-container">
@@ -78,7 +79,7 @@
         <p id="timer">Time: 00:00</p>
     </div>
 
-    <!-- 🏆 Tableau des scores -->
+    <!-- Tableau des scores -->
     <div id="scoreboard">
         <h2>Scores rank</h2>
         <table>
@@ -91,24 +92,27 @@
                 </tr>
             </thead>
             <tbody id="scoreTableBody">
-                <!-- Les scores seront ajoutés ici via script.js -->
+                <!-- Les scores seront ajoutés ici via score.js -->
             </tbody>
         </table>
-        <!-- ✅ Correction des boutons de pagination -->
         <div id="pagination-buttons">
             <button id="prevPage">← Prev</button>
             <button id="nextPage">Next →</button>
         </div>
     </div>
 
-    <!-- 🎲 Prochaines pièces -->
+    <!-- Prochaines pièces -->
     <div id="next-pieces-container">
         <h3>Next</h3>
         <div id="next-piece-1" class="next-piece"></div>
         <div id="next-piece-2" class="next-piece"></div>
         <div id="next-piece-3" class="next-piece"></div>
     </div>
-        <div id="tetromino-background"></div>
-    <script type="module" src="static/script.js" defer></script>
+
+    <!-- Arrière-plan animé -->
+    <div id="tetromino-background"></div>
+
+    <!-- Le point d'entrée unique vers nos modules -->
+    <script type="module" src="static/main.js"></script>
 </body>
 </html>

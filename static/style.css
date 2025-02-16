@@ -315,6 +315,13 @@ body {
     background-position: center;
     background-repeat: no-repeat;
 }
+#prevMap{
+    background-image: url("./image/prevMap.svg");
+}
+#nextMap{
+    background-image: url("./image/nextMap.svg");
+}
+
 
 
 /*-------------------------------------*/

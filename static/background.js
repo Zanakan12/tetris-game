@@ -1,4 +1,9 @@
-// background.js
+// static/background.js
+
+const bg = document.getElementById("tetromino-background");
+let intervalId = null;
+
+// Définition des Tétrominos (formes en matrices simples)
 const tetrominos = [
   [[1, 1, 1, 1]], // I
   [
@@ -27,10 +32,10 @@ const tetrominos = [
   ], // J
 ];
 
-let intervalId = null;
-
+// Crée un tétrimino qui tombe
 function createTetromino() {
-  const bg = document.getElementById("tetromino-background");
+  if (!bg) return;
+
   const tetromino = document.createElement("div");
   tetromino.classList.add("tetromino");
 
@@ -49,25 +54,30 @@ function createTetromino() {
     });
   });
 
+  // Position aléatoire horizontale
   tetromino.style.left = `${Math.random() * window.innerWidth}px`;
   tetromino.style.top = "-50px";
+
+  // Durée aléatoire (5 à 10s)
   tetromino.style.animationDuration = `${Math.random() * 5 + 5}s`;
 
+  // Ajoute au DOM
   bg.appendChild(tetromino);
 
+  // Retire le tetromino après l'animation
   tetromino.addEventListener("animationend", () => {
     tetromino.remove();
   });
 }
 
+// Arrête l'animation, supprime les tétriminos
 function stopTetrominoes() {
-  document.querySelectorAll(".tetromino").forEach((tetromino) => {
-    tetromino.remove();
-  });
+  const allTetrominoes = document.querySelectorAll(".tetromino");
+  allTetrominoes.forEach((t) => t.remove());
 }
 
-export function backGroundManage() {
-  const backgroundbox = document.getElementsByName("background");
+function manageBackgroundCheckbox() {
+  let backgroundbox = document.getElementsByName("background");
 
   backgroundbox.forEach((checkbox) => {
     checkbox.addEventListener("change", function () {
@@ -84,4 +94,10 @@ export function backGroundManage() {
       }
     });
   });
+}
+
+// Init
+export function initBackground() {
+  console.log("Background animation initialized");
+  manageBackgroundCheckbox();
 }

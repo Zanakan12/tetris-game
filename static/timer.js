@@ -1,16 +1,19 @@
-// ========== GESTION DU TIMER ==========
+// static/timer.js
+
 let totalSeconds = 0;
 let timerInterval = null;
 const timerDisplay = document.getElementById("timer");
 
-export function updateTimer() {
+// Met à jour l'affichage du temps
+function updateTimer() {
   let minutes = Math.floor(totalSeconds / 60);
   let seconds = totalSeconds % 60;
-  timerDisplay.textContent = `Time : ${minutes}:${
-    seconds < 10 ? "0" : ""
-  }${seconds}`;
+  if (timerDisplay) {
+    timerDisplay.textContent = `Time : ${minutes}:${
+      seconds < 10 ? "0" : ""
+    }${seconds}`;
+  }
   totalSeconds++;
-  timer = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
 }
 
 // Démarrer le timer
@@ -30,5 +33,12 @@ export function pauseTimer() {
 export function resetTimer() {
   pauseTimer();
   totalSeconds = 0;
-  timerDisplay.textContent = "Time : 0:00";
+  if (timerDisplay) timerDisplay.textContent = "Time : 0:00";
+}
+
+// Init optionnel
+export function initTimer() {
+  console.log("Timer initialized");
+  // Tu peux démarrer ou non le timer directement ici
+  // startTimer();
 }
