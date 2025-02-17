@@ -3,11 +3,11 @@
 import { pauseTimer, startTimer, resetTimer } from "./timer.js";
 import { controlSound } from "./sound.js";
 import { submitScore } from "./score.js";
-import { resetGrid, loadMap } from "./map.js";
+import { resetGrid, loadMap, mapsName,mapPosition } from "./map.js";
 import { timer as globalTimer } from "./globals.js"; // si besoin de stocker la valeur finale
 
 // --- Variables globales du jeu ---
-let isPaused = true;
+export let isPaused = true;
 let score = 0;
 let lives = 3;
 const width = 10;
@@ -67,15 +67,15 @@ const customTetrominoes = {
   ],
 };
 
-const letters = Object.keys(customTetrominoes);
-let squares = [];
+export const letters = Object.keys(customTetrominoes);
+export let squares = [];
 const scoreDisplay = document.getElementById("score");
 const scoreboard = document.getElementById("scoreboard");
 const nextPiecesContainer = document.getElementById("next-pieces-container");
 const pauseButton = document.getElementById("pause-toggle-btn");
 const pauseMenu = document.getElementById("pause-menu");
 const resumeButton = document.getElementById("resume-btn");
-const resetButton = document.getElementById("reset-btn");
+export const resetButton = document.getElementById("reset-btn");
 const settingMenu = document.getElementById("setting-main");
 const settingButton = document.getElementById("setting-btn");
 const doneButton = document.getElementById("done");
@@ -309,7 +309,7 @@ function trapTouch() {
 }
 
 // -------------------- Gestion d'une nouvelle pièce --------------------
-function startNewTetromino() {
+export function startNewTetromino() {
   // On prend la prochaine de la liste
   random = nextPieces.shift();
   // On ajoute une nouvelle aléatoire
@@ -421,7 +421,7 @@ function closePrompt() {
 function resetGame() {
   lives = 3;
   manageLives(lives);
-  loadMap("resurection"); // Recharge la première map, par ex.
+  loadMap(mapsName[mapPosition]); // Recharge la map mis dans les paramètres.
   let echec = "Dommage tu n'es qu'un simple humain...";
   resetTimer();
   typeWriter(echec, "story-text", 100);
@@ -573,6 +573,7 @@ function manageFpsCheckbox() {
 export function initGame() {
   console.log("Game initialized");
   // 1) Créer la grille (200 + 10)
+  
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
   if (grid) {
@@ -588,7 +589,7 @@ export function initGame() {
     }
     squares = Array.from(grid.querySelectorAll("div"));
   }
-
+  
   // 2) Initialiser variables
   score = 0;
   lives = 3;
@@ -652,7 +653,7 @@ export function initGame() {
       if (pauseButton)
         pauseButton.style.backgroundImage =
           "url('static/image/playBouton.svg')";
-      isPaused = false;
+      isPaused = true;
       lives = 3;
       score = 0;
       dropInterval = 500;
@@ -671,7 +672,7 @@ export function initGame() {
         pauseButton.style.visibility = "visible";
       }
       // On relance le Tetris "à zéro"
-      initGame();
+      resetGame();
     });
   }
 

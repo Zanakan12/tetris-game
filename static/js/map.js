@@ -1,7 +1,7 @@
 // static/map.js
-
+import { squares, letters, resetButton, startNewTetromino } from "./game.js";
 // On stocke les différentes maps
-const maps = {
+export const maps = {
   // map medium
   resurection: [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -48,8 +48,8 @@ const maps = {
   ],
 };
 
-let mapPosition = 0;
-const mapsName = Object.keys(maps);
+export let mapPosition = 0;
+export const mapsName = Object.keys(maps);
 
 // Charge (dessine) la map dans la grille
 export function loadMap(mapKey) {
@@ -68,11 +68,12 @@ export function loadMap(mapKey) {
 
 // Réinitialise la grille (efface tout)
 export function resetGrid() {
-  const squares = document.querySelectorAll("#grid div");
-  squares.forEach((square) => {
-    square.classList.remove("block", "taken", "trap");
-    square.textContent = "";
-  });
+  for (let i = 0; i < 200; i++) {
+    squares[i].classList.remove("block", "taken", "trap", ...letters);
+    squares[i].textContent = "";
+  }
+  loadMap(maps.kaweni);
+  startNewTetromino();
 }
 
 // Initialisation
