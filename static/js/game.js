@@ -3,7 +3,7 @@
 import { pauseTimer, startTimer, resetTimer } from "./timer.js";
 import { controlSound } from "./sound.js";
 import { submitScore } from "./score.js";
-import { resetGrid, loadMap, mapsName,mapPosition } from "./map.js";
+import { resetGrid, loadMap, mapsName, mapPosition } from "./map.js";
 import { timer as globalTimer } from "./globals.js"; // si besoin de stocker la valeur finale
 
 // --- Variables globales du jeu ---
@@ -185,6 +185,7 @@ function moveDown() {
   trapTouch();
   endGame();
   draw();
+  controlSound("down");
   freeze();
 }
 
@@ -204,6 +205,7 @@ function moveLeft() {
     }
   }
   draw();
+  controlSound("lrMove");
   lastDropTime = performance.now();
 }
 
@@ -223,10 +225,12 @@ function moveRight() {
     }
   }
   draw();
+  controlSound("lrMove");
   lastDropTime = performance.now();
 }
 
 function rotate() {
+  controlSound("rotate");
   undraw();
   let right = 0;
   let left = 0;
@@ -298,6 +302,7 @@ function trapTouch() {
     if (squares[targetIndex]?.classList.contains("trap")) {
       squares[targetIndex].classList.remove("trap");
       squares[targetIndex].textContent = "";
+      controlSound("damage");
       livesLost++;
     }
   });
@@ -395,14 +400,23 @@ function showPrompt() {
     const promptEl = document.getElementById("customPrompt");
     if (!promptEl) return resolve("Player1");
 
+    scoreboard.classList.add("overlay");
+    nextPiecesContainer.classList.add("overlay");
+    pauseButton.classList.add("overlay");
+
     promptEl.classList.add("active");
     const buttonPromptConfirm = document.getElementById("btn-confirm");
+    const buttonPromptCancel = document.getElementById("btn-cancel");
     const playerNameInput = document.getElementById("playerNameInput");
 
     buttonPromptConfirm.addEventListener(
       "click",
       () => {
         const playerName = playerNameInput.value;
+        scoreboard.classList.remove("overlay");
+        nextPiecesContainer.classList.remove("overlay");
+        pauseButton.classList.remove("overlay");
+
         closePrompt();
         resolve(playerName || "Player1");
       },
@@ -420,6 +434,7 @@ function closePrompt() {
 
 function resetGame() {
   lives = 3;
+  pauseButton.style.backgroundImage = "url('static/image/playBouton.svg')";
   manageLives(lives);
   loadMap(mapsName[mapPosition]); // Recharge la map mis dans les paramètres.
   let echec = "Dommage tu n'es qu'un simple humain...";
@@ -573,23 +588,30 @@ function manageFpsCheckbox() {
 export function initGame() {
   console.log("Game initialized");
   // 1) Créer la grille (200 + 10)
-  
+
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
   if (grid) {
     for (let i = 0; i < 200; i++) {
       const cell = document.createElement("div");
+      cell.style.backgroundImage = "url('static/image/greenBackground.avif')";
+      cell.style.backgroundRepeat = "no-repeat"; // No repeating of the image
+      cell.style.backgroundSize = "cover"; // Make the image fill the container
+      cell.style.backgroundPosition = "center";
       grid.appendChild(cell);
     }
     for (let i = 0; i < 10; i++) {
       const cell = document.createElement("div");
       cell.classList.add("taken", "bottom-line");
-      cell.textContent = "🧱";
+      cell.style.backgroundImage = "url('static/image/BrickBlock.svg')";
+      cell.style.backgroundRepeat = "no-repeat"; // No repeating of the image
+      cell.style.backgroundSize = "cover"; // Make the image fill the container
+      cell.style.backgroundPosition = "center";
       grid.appendChild(cell);
     }
     squares = Array.from(grid.querySelectorAll("div"));
   }
-  
+
   // 2) Initialiser variables
   score = 0;
   lives = 3;
@@ -641,6 +663,7 @@ export function initGame() {
       scoreboard.classList.remove("overlay");
       pauseMenu.classList.remove("active");
       pauseMenu.classList.add("hidden");
+      controlSound("play");
       isPaused = false;
       if (pauseButton) pauseButton.style.visibility = "visible";
       startTimer();

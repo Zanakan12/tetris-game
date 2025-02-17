@@ -39,6 +39,5 @@ export function resetTimer() {
 // Init optionnel
 export function initTimer() {
   console.log("Timer initialized");
-  // Tu peux démarrer ou non le timer directement ici
   // startTimer();
 }
