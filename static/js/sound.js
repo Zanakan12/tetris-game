@@ -20,21 +20,25 @@ export function controlSound(action) {
         break;
       case "remove": {
         let removeSound = new Audio("/static/song/remove.mp3");
+        removeSound.volume = 0.3;
         removeSound.play();
         break;
       }
       case "collision": {
         let collision = new Audio("/static/song/collision.mp3");
+        
         collision.play();
         break;
       }
       case "down": {
         let down = new Audio("/static/song/down.mp3");
+        down.volume = 0.1;
         down.play();
         break;
       }
       case "typeWriter": {
         let typeWriter = new Audio("/static/song/typewriter.wav");
+        typeWriter.volume= 0.3;
         typeWriter.play();
         break;
       }

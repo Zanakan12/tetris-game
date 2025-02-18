@@ -385,6 +385,7 @@ function endGame() {
   // 2) Vérifier si plus de vies
   if (lives < 1) {
     pauseTimer();
+    isPaused = true;
     showPrompt().then((playerName) => {
       if (playerName) {
         submitScore(playerName, score, globalTimer);
@@ -422,6 +423,9 @@ function showPrompt() {
       },
       { once: true }
     );
+    buttonPromptCancel.addEventListener("click", () => {
+      closePrompt();
+    });
   });
 }
 

@@ -45,12 +45,12 @@ body {
 /* Tableau des scores */
 #scoreboard {
     position: absolute;
-    left: 304px;
+    left: 575px;
     top: 182px;
     width: 150px;
     padding: 10px;
-    background: #8d8e8d;
-    border-radius: 8px;
+    border:solid 1px;
+    border-color: #dddddd;
 }
 
 #scoreboard table {
@@ -110,8 +110,8 @@ body {
 /* Prochaines pièces (Tetris) */
 #next-pieces-container {
     position: absolute;
-    right: 450px;
-    top: 157px;
+    right: 35vw;
+    top: 6vw;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -166,8 +166,8 @@ body {
 
 #pause-toggle-btn {
     position: absolute;
-    top:800px;
-    right:490px;
+    top:39.3vw;
+    right:39vw;
     width: 50px; /* Set width to fit the image */
     height: 50px; /* Adjust height */
     background-size: contain; /* Ensure the SVG fits inside */
@@ -318,12 +318,13 @@ body {
 #lives{
     position: absolute;
     left: 35vw;
-    top: 42.5vw;
+    top: 40.5vw;
 }
 
 #timer{
     position: absolute;
-    top: 45vw;
+    top: 41vw;
+    left: 44.5vw;
     width:200px;
     font-size: 16px;
     background: rgba(100, 97, 97, 0.7);
@@ -331,6 +332,7 @@ body {
     padding: 5px 10px;
     border-radius: 5px;
 }
+
 /*-------------------------------------*/
 
 /* Overlay pour l'effet de fond flouté */
@@ -415,13 +417,13 @@ body {
 }
 /* ------------story-----------*/
 
-#information,#story-text{
+#story-text{
     position: absolute;
-    top: 180px;
-    left: 145px;
+    top: 20vw;
+    left: 29vw;
     width: 200px;
-    background-color: #888;
-    border-radius: 10%;
+    border:solid 1px;
+    border-color: #dddddd;
 }
 /* -----------background--------------- */
 #tetromino-background {
@@ -533,65 +535,189 @@ body {
         3px 3px 0 #d000ff; /* Effet néon pixelisé */
 }
 
-/* responsivity */
+#score{
+    position: absolute;
+    top:5.4vw;
+    left: 48.4vw;
+    border:solid 1px;
+    border-color: #dddddd;
+}
 
-@media (max-width: 1247px) {
+
+/* --- RESPONSIVE DESIGN ADAPTATIONS --- */
+/* --- RESPONSIVE DESIGN ADAPTATIONS --- */
+
+/* Mobile (écrans < 768px) */
+@media (max-width: 768px) {
+    body {
+        font-size: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #grid {
+        grid-template-columns: repeat(10, 20px);
+        grid-template-rows: repeat(20, 20px);
+        width: 210px;
+    }
+
+    #next-pieces-container, #scoreboard, #pause-toggle-btn, #lives, #timer, #story-text, #information, #pause-menu, #setting-main {
+        position: static;
+        margin: 10px auto;
+        text-align: center;
+    }
+
+    #pause-menu .menu-content, #setting-main {
+        width: 90%;
+    }
+
+    .tetris-title {
+        font-size: 32px;
+    }
+
+    #pause-toggle-btn {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Tablette (écrans entre 768px et 1267px) */
+@media (min-width: 768px) and (max-width: 1267px) {
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #grid {
+        grid-template-columns: repeat(10, 25px);
+        grid-template-rows: repeat(20, 25px);
+        width: 262px;
+    }
+
+    #next-pieces-container, #scoreboard, #pause-toggle-btn, #lives, #timer, #story-text, #information, #pause-menu, #setting-main {
+        position: static;
+        margin: 10px auto;
+        text-align: center;
+    }
+
+    #pause-menu .menu-content, #setting-main {
+        width: 70%;
+    }
+
+    .tetris-title {
+        font-size: 45px;
+    }
+
+    #pause-toggle-btn {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+/* Ordinateur (écrans > 1267px) */
+@media (min-width: 1268px) {
+    body {
+        display: block;
+    }
+
+    #grid {
+        grid-template-columns: repeat(10, 30px);
+        grid-template-rows: repeat(20, 30px);
+        width: 314px;
+        margin: 50px auto;
+    }
+
     #next-pieces-container {
         position: absolute;
-        top: 16vw;
-        right: 25vw; 
-    }
-    
-    #scoreboard{
-            position: absolute;
-            top: 18,5vw;
-            left: 17vw; 
+        right: 35vw;
+        top: 6vw;
     }
 
-    #story-text{
+    #scoreboard {
         position: absolute;
-        top: 20vw;
-        left: 1vw;
+        left: 575px;
+        top: 182px;
     }
+
     #pause-toggle-btn {
         position: absolute;
-        right: 27vw; 
-    }
-    #setting-main{
-        position: absolute;
-        left: 36.5vw;
+        top: 39.3vw;
+        right: 39vw;
+        width: 50px;
+        height: 50px;
     }
 
-    #lives{
+    #lives {
         position: absolute;
-        top: 67vw;
-        left: 25vw;
+        left: 35vw;
+        top: 40.5vw;
+    }
+
+    #timer {
+        position: absolute;
+        top: 41vw;
+        left: 44.5vw;
+    }
+
+    #story-text {
+        position: absolute;
+        top: 20vw;
+        left: 29vw;
+    }
+
+    .tetris-title {
+        font-size: 60px;
+    }
+}
+
+/* Ajustement des boutons */
+button {
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 5px;
+}
+
+/* Réduire la taille des pièces suivantes sur mobile */
+@media (max-width: 768px) {
+    #next-pieces-container div {
+        width: 40px;
+        height: 40px;
         font-size: 40px;
     }
 }
 
-@media (max-width: 723px) {
-    #next-pieces-container {
-        position: absolute;
-        top: 16vw;
-        right: 25vw; 
-    }
-    
-    #scoreboard{
-            position: absolute;
-            top: 18,5vw;
-            left: 17vw; 
-    }
-
-    #story-text{
-        position: absolute;
-        top: 20vw;
-        left: 1vw;
-    }
-    #pause-toggle-btn {
-        position: absolute;
-        right: 27vw; 
+/* Centrer les éléments sur mobile */
+@media (max-width: 768px) {
+    #scoreboard, #next-pieces-container, #pause-toggle-btn, #lives, #timer, #story-text {
+        text-align: center;
+        margin: auto;
     }
 }
 
+/* Améliorer la lisibilité sur mobile */
+@media (max-width: 768px) {
+    #score, #timer, #lives {
+        font-size: 14px;
+    }
+}
 
+/* Espacement général */
+@media (max-width: 768px) {
+    #information, #pause-menu, #setting-main {
+        margin-top: 10px;
+    }
+}
+
+/* Ajuster le prompt sur mobile */
+@media (max-width: 768px) {
+    .prompt-box input {
+        font-size: 14px;
+    }
+    .prompt-box button {
+        font-size: 12px;
+    }
+}

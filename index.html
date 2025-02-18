@@ -28,8 +28,7 @@
 
     <!-- Bouton pour mettre en pause/reprendre -->
     <button id="pause-toggle-btn"></button>
-    <button id="change-map-btn">Changer de carte</button>
-
+    
     <!-- Menu de pause -->
     <div id="pause-menu" class="hidden">
         <div class="menu-content">
@@ -42,7 +41,7 @@
     </div>
 
     <!-- Menu des réglages -->
-    <div id="setting-main">
+    <div id="setting-main" class="hidden">
         <h3>SETTING</h3>
         <p>SOUND 
             <label class="switch">
@@ -62,22 +61,22 @@
                 <span class="slider round"></span>
             </label>
         </p>
+        <br>
         <div id="mapSelector">
             <span>MAP</span>
             <div id="prevMap"></div>
             <div id="map"></div>
             <div id="nextMap"></div>
         </div>
+        <br>
         <button id="done">DONE</button>
     </div>
 
     <!-- La grille Tetris -->
     <div id="fire-container"></div>
     <div id="grid"></div>
-    <div id="score-container">
         <p id="score">Score: 0</p>
-        <p id="timer">Time: 00:00</p>
-    </div>
+        <p id="timer">Time: 0:00</p>
 
     <!-- Tableau des scores -->
     <div id="scoreboard">
