@@ -4,12 +4,13 @@ import { pauseTimer, startTimer, resetTimer } from "./timer.js";
 import { controlSound } from "./sound.js";
 import { submitScore } from "./score.js";
 import { resetGrid, loadMap, mapsName, mapPosition } from "./map.js";
-import { timer as globalTimer } from "./globals.js"; // si besoin de stocker la valeur finale
+
 
 // --- Variables globales du jeu ---
 export let isPaused = true;
 let score = 0;
 let lives = 3;
+let globalTimer = 0;
 const width = 10;
 let current;
 let currentPosition = 3;
@@ -118,7 +119,7 @@ function manageLives(lifeCount) {
   for (let i = 0; i < maxLives; i++) {
     let color = i < lifeCount ? "red" : "gray"; // Active = Red, Lost = Gray
     let svgHeart = `
-      <svg width="30" height="30" viewBox="0 0 24 24" fill="${color}" xmlns="http://www.w3.org/2000/svg">
+      <svg width="50" height="50" viewBox="0 0 24 24" fill="${color}" xmlns="http://www.w3.org/2000/svg">
         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 
           2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 
           4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 
@@ -129,7 +130,7 @@ function manageLives(lifeCount) {
   }
 }
 
-// Récupérer le symbole d'un Tetromino (lettre) selon qu'on veut un symbole ou un emoji
+// Récupérer le symbole d'un Tetromino (lettre) selon qu'on veut un symbole ou un eveji
 function getTetrominoSymbol(letter, type) {
   switch (letter) {
     case "J":
@@ -172,7 +173,7 @@ function undraw() {
 }
 
 // -------------------- Déplacements --------------------
-function moveDown() {
+async function moveDown() {
   undraw();
   const newPosition = currentPosition + width;
   const isCollision = current.some((index) =>
@@ -183,8 +184,8 @@ function moveDown() {
     currentPosition = newPosition;
   }
   trapTouch();
-  endGame();
   draw();
+  endGame();
   controlSound("down");
   freeze();
 }
@@ -375,7 +376,6 @@ function endGame() {
     pauseTimer();
     showPrompt().then((playerName) => {
       if (playerName) {
-        // On enregistre le score
         submitScore(playerName, score, globalTimer);
       }
     });
@@ -391,13 +391,12 @@ function endGame() {
         submitScore(playerName, score, globalTimer);
       }
     });
-    resetGrid();
-    resetGame();
   }
 }
 
 function showPrompt() {
-  return new Promise((resolve) => {
+  return new Promise((
+    resolve) => {
     const promptEl = document.getElementById("customPrompt");
     if (!promptEl) return resolve("Player1");
 
@@ -423,7 +422,11 @@ function showPrompt() {
       },
       { once: true }
     );
+
     buttonPromptCancel.addEventListener("click", () => {
+      scoreboard.classList.remove("overlay");
+      nextPiecesContainer.classList.remove("overlay");
+      pauseButton.classList.remove("overlay");
       closePrompt();
     });
   });
@@ -434,6 +437,8 @@ function closePrompt() {
   if (promptEl) {
     promptEl.classList.remove("active");
   }
+  resetGame();
+  resetGrid();
 }
 
 function resetGame() {
@@ -598,7 +603,7 @@ export function initGame() {
   if (grid) {
     for (let i = 0; i < 200; i++) {
       const cell = document.createElement("div");
-      cell.style.backgroundImage = "url('static/image/greenBackground.avif')";
+
       cell.style.backgroundRepeat = "no-repeat"; // No repeating of the image
       cell.style.backgroundSize = "cover"; // Make the image fill the container
       cell.style.backgroundPosition = "center";

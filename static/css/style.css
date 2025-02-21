@@ -1,723 +1,584 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 /* Style général */
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background-color: #000; /* Couleur de fond du jeu */
-    color: white;
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
+  font-family: "Arial", sans-serif;
+  background-color: #0d0d0d;
+  color: #ffffff;
+  font-family: "Press Start 2P", cursive; /* Police rétro */
+  display: flex;
+  height: 100vh;
+}
+
+h1,
+h2,
+p,
+button {
+  font-family: "Press Start 2P", cursive !important;
+}
+
+#left-section {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 150px;
+}
+
+#middle-section {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#right-section {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 100px;
+  margin-top: 215px;
+}
+
+#timer {
+  display: flex;
+  align-items: center;
+  align-content: center;
+}
+#timer,
+#score {
+  font-size: 16px;
+  background: rgba(100, 97, 97, 0.7);
+  color: white;
+  padding: 5px 10px;
+  border: solid 1px;
+  border-radius: 5px;
 }
 
 /* Grille de jeu */
 #grid {
-    display: grid;
-    grid-template-columns: repeat(10, 30px);
-    grid-template-rows: repeat(20, 30px);
-    gap: 1.5px;
-    margin: 20px auto;
-    background-color: #8d8d8d;
-    width: 314px; 
-    border: 3px solid #282424;
+  display: grid;
+  grid-template-columns: repeat(10, 30px);
+  grid-template-rows: repeat(20, 30px);
+  gap: 1.5px;
+  margin: 20px auto;
+  background-color: #8d8d8d;
+  width: 314px;
+  border: 3px solid #282424;
 }
 
 #grid div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 30px;
-    height: 30px;
-    background-color: #717171;
-    font-size: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  background-color: #717171;
+  font-size: 30px;
 }
 
-.bottom-line{
-    width: 10px;
+.bottom-line {
+  width: 10px;
 }
 /* Animation pour la ligne supprimée */
 @keyframes glow {
-    0% { box-shadow: 0 0 10px rgba(255, 69, 0, 0.8); }
-    50% { box-shadow: 0 0 30px rgba(255, 140, 0, 0.9); }
-    100% { box-shadow: 0 0 10px rgba(255, 69, 0, 0.8); }
+  0% {
+    box-shadow: 0 0 10px rgba(255, 69, 0, 0.8);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 140, 0, 0.9);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(255, 69, 0, 0.8);
+  }
 }
-
 
 /* Tableau des scores */
 #scoreboard {
-    position: absolute;
-    left: 575px;
-    top: 182px;
-    width: 150px;
-    padding: 10px;
-    border:solid 1px;
-    border-color: #dddddd;
+  width: auto;
+  padding: 10px;
+  border: solid 1px;
+  border-color: #dddddd;
+  margin-top: 50px;
 }
 
 #scoreboard table {
-    width: 100%;
-    border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0 10px; /* Espace vertical entre les lignes */
+  width: 60%;
+  margin: 20px auto;
+
+  color: white;
+  font-family: "Press Start 2P", cursive;
 }
 
-#scoreboard th, #scoreboard td {
-    border: 1px solid #6b6b6b;
-    padding: 1px;
-    text-align: center;
+#scoreboard th,
+#scoreboard td {
+  padding: 10px;
+  text-align: left;
+  background-color: #222;
+  
 }
 
+thead th {
+  background-color: #333;
+}
 
 #scoreboard h2 {
-    text-align: center;
-    font-size: 15px;
+  text-align: center;
+  font-size: 15px;
 }
 
 #scoreboard tr {
-    font-size: 10px;
+  font-size: 10px;
 }
 
-#pagination-buton, #pagination-buton td {
-    border: none !important;
-}
+#pagination-buton,
+#pagination-buton td {
+  border: none !important;}
 
 /* Boutons de pagination */
 #scoreboard button {
-    width: 100%;
-    margin-top: 5px;
-    padding: 5px;
-    border: none;
-    background-color: #f1f2f0;
-    color: rgb(0, 0, 0);
-    cursor: pointer;
-    border-radius: 4px;
-    font-size: 7px;
-}
-#scoreboard-buttons {
-    display: flex; /* Aligner les boutons horizontalement */
-    justify-content: center; /* Centrer les boutons */
-    gap: 5px; /* Espacement entre les boutons */
+  width: 100%;
+  margin-top: 5px;
+  padding: 5px;
+  border: none;
+  background-color: #f1f2f0;
+  color: rgb(0, 0, 0);
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 7px;
+  margin-left: 85px
+;
 }
 
+#scoreboard-buttons {
+  display: flex; /* Aligner les boutons horizontalement */
+  justify-content: center; /* Centrer les boutons */
+}
 
 #scoreboard button {
-    display: inline-block; /* Permet aux boutons de s'afficher côte à côte */
-    width: auto; /* Permet aux boutons de s'ajuster à leur contenu */
-    margin: 5px; /* Ajoute un peu d'espacement */
+  display: inline-block; /* Permet aux boutons de s'afficher côte à côte */
+  width: auto; /* Permet aux boutons de s'ajuster à leur contenu */
 }
-#prevPage:hover,#nextPage:hover{
-    background: rgb(255, 238, 0);
-
+#prevPage:hover,
+#nextPage:hover {
+  background: rgb(255, 238, 0);
 }
 
 /* Prochaines pièces (Tetris) */
 #next-pieces-container {
-    position: absolute;
-    right: 35vw;
-    top: 6vw;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 #next-pieces-container div {
-    width: 80px;
-    height: 80px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 80px;
-    color: #bb2424;
-    border: 2px solid black;
-    background-color: #ddd;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 80px;
+  color: #bb2424;
+  border: 2px solid black;
+  background-color: #ddd;
 }
 
 .T {
-    color: rgb(0, 128, 0) !important;
-  }
+  color: rgb(0, 128, 0) !important;
+}
 .I {
-    color: rgb(107, 0, 128) !important;
-  }
-  .J {
-    color: rgb(128, 0, 0) !important;
-  }
-  .L {
-    color: rgb(231, 85, 0) !important;
-  }
-  .Z {
-    color: rgb(9, 0, 128) !important;
-  }
-  .N {
-    color: rgb(65, 35, 0) !important;
-  }
-  .O{
-    color: rgb(255, 225, 2) !important;
-  }
+  color: rgb(107, 0, 128) !important;
+}
+.J {
+  color: rgb(128, 0, 0) !important;
+}
+.L {
+  color: rgb(231, 85, 0) !important;
+}
+.Z {
+  color: rgb(9, 0, 128) !important;
+}
+.N {
+  color: rgb(65, 35, 0) !important;
+}
+.O {
+  color: rgb(255, 150, 2) !important;
+}
 /* Affichage des FPS */
 #fps-display {
-    position: absolute;
-    top: 10px;
-    left: 20px;
-    font-size: 16px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
+  align-self: flex-start !important;
+  font-size: 16px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
 }
 
 /* --- MENU DE PAUSE --- */
 
 #pause-toggle-btn {
-    position: absolute;
-    top:39.3vw;
-    right:39vw;
-    width: 50px; /* Set width to fit the image */
-    height: 50px; /* Adjust height */
-    background-size: contain; /* Ensure the SVG fits inside */
-    background-repeat: no-repeat;
-    background-position: center;
-    /* background-color: transparent; Optional: Ensure no conflicting background */
-    border-radius: 10%; /* Optional: Remove button border */
-    cursor: pointer; /* Make it clickable */
+  width: 50px; /* Set width to fit the image */
+  height: 50px; /* Adjust height */
+  background-size: contain; /* Ensure the SVG fits inside */
+  background-repeat: no-repeat;
+  background-position: center;
+  /* background-color: transparent; Optional: Ensure no conflicting background */
+  border-radius: 10%; /* Optional: Remove button border */
+  cursor: pointer; /* Make it clickable */
+  background-color: green;
 }
 
-#pause-menu{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(5px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    visibility: hidden;
+#pause-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
 }
 
 .menu-content {
-    background: #222;
-    color: white;
-    padding: 20px;
-    text-align: center;
-    border-radius: 10px;
-    box-shadow: 0px 4px 15px rgba(255, 255, 255, 0.2);
-    max-width: 400px;
-    width: 80%;
-    font-family: Arial, sans-serif;
+  background: #222;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0px 4px 15px rgba(255, 255, 255, 0.2);
+  max-width: 400px;
+  width: 80%;
+  font-family: Arial, sans-serif;
 }
 
 .menu-content h2 {
-    font-size: 20px;
-    color: #FFD700;
-    margin-bottom: 10px;
-    display: flex;
+  font-size: 20px;
+  color: #ffd700;
+  margin-bottom: 10px;
+  display: flex;
 }
 
 #pause-menu button {
-    padding: 10px 20px;
-    margin: 5px;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
 }
 #pause-menu button {
-    display: block; /* Assure que chaque bouton prend toute la largeur */
-    width: 80%; /* Facultatif : Ajuste la largeur au conteneur */
+  display: block; /* Assure que chaque bouton prend toute la largeur */
+  width: 80%; /* Facultatif : Ajuste la largeur au conteneur */
 }
 
 .menu-content {
-    display: flex;
-    flex-direction: column; /* Aligner les boutons verticalement */
-    align-items: center; /* Centrer horizontalement */
+  display: flex;
+  flex-direction: column; /* Aligner les boutons verticalement */
+  align-items: center; /* Centrer horizontalement */
 }
 
-
 .btn-confirm {
-    background: #FFD700;
-    color: black;
-    font-weight: bold;
+  background: #ffd700;
+  color: black;
+  font-weight: bold;
 }
 
 .btn-cancel {
-    background: #888;
-    color: white;
+  background: #888;
+  color: white;
 }
 
 .btn-confirm:hover {
-    background: #daa520;
+  background: #daa520;
 }
 
 .btn-cancel:hover {
-    background: #666;
+  background: #666;
 }
 
 /* Classe pour afficher le menu */
 #pause-menu.active {
-    opacity: 1;
-    visibility: visible;
+  opacity: 1;
+  visibility: visible;
 }
 
-#pause-menu button:hover{
-    background: #b38900;
+#pause-menu button:hover {
+  background: #b38900;
 }
 
-#setting-main{
-    position: fixed;
-    top: 350px;
-    left: 800px;
-    width: 304px;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(5px);
-    display: flex;
-    flex-direction: column; /* S'assurer que les éléments s'empilent */
-    align-items: flex-start; /* Aligner les éléments à gauche */
-    padding: 10px;
-    border-radius: 10px;
-    visibility: hidden;
-
+#setting-main {
+  position: fixed;
+  top: 350px;
+  left: 800px;
+  width: 304px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  flex-direction: column; /* S'assurer que les éléments s'empilent */
+  align-items: flex-start; /* Aligner les éléments à gauche */
+  padding: 10px;
+  border-radius: 10px;
+  visibility: hidden;
 }
-#pause-menu{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(5px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    visibility: hidden;
+#pause-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
 }
-#setting-main button{
-    align-self: center !important;
+#setting-main button {
+  align-self: center !important;
 }
 
 #mapSelector {
-    display: flex;
-    flex-direction: row;
-    align-items: center; /* Alignement vertical des éléments */
-
+  display: flex;
+  flex-direction: row;
+  align-items: center; /* Alignement vertical des éléments */
 }
 
-#prevMap,#nextMap{
-    width: 25px; /* Adjust size as needed */
-    height: 20px;
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
+#prevMap,
+#nextMap {
+  width: 25px; /* Adjust size as needed */
+  height: 20px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
 }
-#prevMap{
-    background-image: url("../image/prevMap.svg");
+#prevMap {
+  background-image: url("../image/prevMap.svg");
 }
-#nextMap{
-    background-image: url("../image/nextMap.svg");
-}
-
-#lives{
-    position: absolute;
-    left: 35vw;
-    top: 40.5vw;
-}
-
-#timer{
-    position: absolute;
-    top: 41vw;
-    left: 44.5vw;
-    width:200px;
-    font-size: 16px;
-    background: rgba(100, 97, 97, 0.7);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
+#nextMap {
+  background-image: url("../image/nextMap.svg");
 }
 
 /*-------------------------------------*/
 
 /* Overlay pour l'effet de fond flouté */
 .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(5px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    visibility: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
 }
 
 /* Conteneur du prompt */
 .prompt-box {
-    background: #222;
-    color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 15px rgba(255, 255, 255, 0.2);
-    text-align: center;
-    max-width: 400px;
-    width: 80%;
-    font-family: Arial, sans-serif;
+  background: #222;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 15px rgba(255, 255, 255, 0.2);
+  text-align: center;
+  max-width: 400px;
+  width: 80%;
+  font-family: Arial, sans-serif;
 }
 
 .prompt-box h2 {
-    margin-bottom: 10px;
-    font-size: 20px;
-    color: #FFD700;
+  margin-bottom: 10px;
+  font-size: 20px;
+  color: #ffd700;
 }
 
 .prompt-box input {
-    width: 90%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 2px solid #FFD700;
-    border-radius: 5px;
-    font-size: 16px;
-    text-align: center;
-    background: black;
-    color: white;
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 2px solid #ffd700;
+  border-radius: 5px;
+  font-size: 16px;
+  text-align: center;
+  background: black;
+  color: white;
 }
 
 .prompt-box button {
-    padding: 10px 20px;
-    margin: 5px;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 .btn-confirm {
-    background: #FFD700;
-    color: black;
-    font-weight: bold;
+  background: #ffd700;
+  color: black;
+  font-weight: bold;
 }
 
 .btn-cancel {
-    background: #888;
-    color: white;
+  background: #888;
+  color: white;
 }
 
 .btn-confirm:hover {
-    background: #daa520;
+  background: #daa520;
 }
 
 .btn-cancel:hover {
-    background: #666;
+  background: #666;
 }
 
 /* Affichage du prompt */
 .overlay.active {
-    opacity: 1;
-    visibility: visible;
+  opacity: 1;
+  visibility: visible;
 }
 /* ------------story-----------*/
 
-#story-text{
-    position: absolute;
-    top: 20vw;
-    left: 29vw;
-    width: 200px;
-    border:solid 1px;
-    border-color: #dddddd;
+#story-text {
+  width: 400px;
+  border: solid 1px;
+  border-color: #dddddd;
 }
 /* -----------background--------------- */
 #tetromino-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    z-index: -1;
-    background-color: #111;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: -1;
+}
+
+#tetromino-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: -1;
+  background-color: #111;
+}
+
+.tetromino {
+  position: absolute;
+  display: grid;
+  grid-template-columns: repeat(4, 20px);
+  grid-template-rows: repeat(4, 20px);
+  gap: 2px;
+  opacity: 0.7;
+  animation: fall linear infinite;
+}
+
+.block {
+  width: 20px;
+  height: 20px;
+  background-color: rgba(0, 255, 255, 0.7);
+}
+
+@keyframes fall {
+  from {
+    transform: translateY(-50px);
   }
-  
-  .tetromino {
-    position: absolute;
-    display: grid;
-    grid-template-columns: repeat(4, 20px);
-    grid-template-rows: repeat(4, 20px);
-    gap: 2px;
-    opacity: 0.7;
-    animation: fall linear infinite;
+  to {
+    transform: translateY(110vh);
   }
-  
-  .block {
-    width: 20px;
-    height: 20px;
-    background-color: rgba(0, 255, 255, 0.7);
-  }
-  
-  @keyframes fall {
-    from {
-      transform: translateY(-50px);
-    }
-    to {
-      transform: translateY(110vh);
-    }
-  }
-  /*----------------Switch bouton-------------------*/
-  /* The switch - the box around the slider */
+}
+
+/*----------------Switch bouton-------------------*/
+/* The switch - the box around the slider */
 .switch {
-    position: relative;
-    display: inline-block;
-    width: 42px;
-    height:20px;
-  }
-  
-  /* Hide default HTML checkbox */
-  .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  
-  /* The slider */
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #000000;
-  }
-  
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 17px;
-    width: 15px;
-    left: 1px;
-    bottom: 1px;
-    background-color: white;
-  }
-  
-  input:checked + .slider {
-    background-color: #f3cd21;
-  }
-  
-  input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
-  }
-  
-  input:checked + .slider:before {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
-    transform: translateX(26px);
-  }
-  
-  /* Rounded sliders */
-  .slider.round {
-    border-radius:20px;
-  }
-  
-  .slider.round:before {
-    border-radius: 50%;
-  }
-  /* title */
-
-  .tetris-title {
-    font-family: 'Press Start 2P', cursive; /* Police rétro */
-    font-size: 60px;
-    text-align: center;
-    letter-spacing: 5px;
-    color: #572f58;
-    text-shadow: 
-        -3px -3px 0 #ff0000,  
-        3px -3px 0 #ffcc00,
-        -3px 3px 0 #0000ff,  
-        3px 3px 0 #d000ff; /* Effet néon pixelisé */
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 20px;
 }
 
-#score{
-    position: absolute;
-    top:5.4vw;
-    left: 48.4vw;
-    border:solid 1px;
-    border-color: #dddddd;
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
-
-/* --- RESPONSIVE DESIGN ADAPTATIONS --- */
-/* --- RESPONSIVE DESIGN ADAPTATIONS --- */
-
-/* Mobile (écrans < 768px) */
-@media (max-width: 768px) {
-    body {
-        font-size: 12px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-
-    #grid {
-        grid-template-columns: repeat(10, 20px);
-        grid-template-rows: repeat(20, 20px);
-        width: 210px;
-    }
-
-    #next-pieces-container, #scoreboard, #pause-toggle-btn, #lives, #timer, #story-text, #information, #pause-menu, #setting-main {
-        position: static;
-        margin: 10px auto;
-        text-align: center;
-    }
-
-    #pause-menu .menu-content, #setting-main {
-        width: 90%;
-    }
-
-    .tetris-title {
-        font-size: 32px;
-    }
-
-    #pause-toggle-btn {
-        width: 40px;
-        height: 40px;
-    }
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #000000;
 }
 
-/* Tablette (écrans entre 768px et 1267px) */
-@media (min-width: 768px) and (max-width: 1267px) {
-    body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-
-    #grid {
-        grid-template-columns: repeat(10, 25px);
-        grid-template-rows: repeat(20, 25px);
-        width: 262px;
-    }
-
-    #next-pieces-container, #scoreboard, #pause-toggle-btn, #lives, #timer, #story-text, #information, #pause-menu, #setting-main {
-        position: static;
-        margin: 10px auto;
-        text-align: center;
-    }
-
-    #pause-menu .menu-content, #setting-main {
-        width: 70%;
-    }
-
-    .tetris-title {
-        font-size: 45px;
-    }
-
-    #pause-toggle-btn {
-        width: 50px;
-        height: 50px;
-    }
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 17px;
+  width: 15px;
+  left: 1px;
+  bottom: 1px;
+  background-color: white;
 }
 
-/* Ordinateur (écrans > 1267px) */
-@media (min-width: 1268px) {
-    body {
-        display: block;
-    }
-
-    #grid {
-        grid-template-columns: repeat(10, 30px);
-        grid-template-rows: repeat(20, 30px);
-        width: 314px;
-        margin: 50px auto;
-    }
-
-    #next-pieces-container {
-        position: absolute;
-        right: 35vw;
-        top: 6vw;
-    }
-
-    #scoreboard {
-        position: absolute;
-        left: 575px;
-        top: 182px;
-    }
-
-    #pause-toggle-btn {
-        position: absolute;
-        top: 39.3vw;
-        right: 39vw;
-        width: 50px;
-        height: 50px;
-    }
-
-    #lives {
-        position: absolute;
-        left: 35vw;
-        top: 40.5vw;
-    }
-
-    #timer {
-        position: absolute;
-        top: 41vw;
-        left: 44.5vw;
-    }
-
-    #story-text {
-        position: absolute;
-        top: 20vw;
-        left: 29vw;
-    }
-
-    .tetris-title {
-        font-size: 60px;
-    }
+input:checked + .slider {
+  background-color: #f3cd21;
 }
 
-/* Ajustement des boutons */
-button {
-    font-size: 14px;
-    padding: 8px 16px;
-    border-radius: 5px;
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
 }
 
-/* Réduire la taille des pièces suivantes sur mobile */
-@media (max-width: 768px) {
-    #next-pieces-container div {
-        width: 40px;
-        height: 40px;
-        font-size: 40px;
-    }
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
 }
 
-/* Centrer les éléments sur mobile */
-@media (max-width: 768px) {
-    #scoreboard, #next-pieces-container, #pause-toggle-btn, #lives, #timer, #story-text {
-        text-align: center;
-        margin: auto;
-    }
+/* Rounded sliders */
+.slider.round {
+  border-radius: 20px;
 }
 
-/* Améliorer la lisibilité sur mobile */
-@media (max-width: 768px) {
-    #score, #timer, #lives {
-        font-size: 14px;
-    }
+.slider.round:before {
+  border-radius: 50%;
+}
+/* title */
+
+.tetris-title {
+  font-family: "Press Start 2P", cursive; /* Police rétro */
+  font-size: 60px;
+  text-align: center;
+  letter-spacing: 5px;
+  color: #4a3737;
+  text-shadow: -3px -3px 0 #f4f4f4, 3px -3px 0 #cfcfcf, -3px 3px 0 #575757,
+    3px 3px 0 #615763; /* Effet néon pixelisé */
 }
 
-/* Espacement général */
-@media (max-width: 768px) {
-    #information, #pause-menu, #setting-main {
-        margin-top: 10px;
-    }
+#lives {
+  border: solid 1px;
+  border-color: #dddddd;
+  background: #2196f3;
+  width: 188px;
 }
 
-/* Ajuster le prompt sur mobile */
-@media (max-width: 768px) {
-    .prompt-box input {
-        font-size: 14px;
-    }
-    .prompt-box button {
-        font-size: 12px;
-    }
-}
+/* retro style */

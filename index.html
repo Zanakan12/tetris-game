@@ -1,117 +1,129 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title class="title">Tetris</title>
-  <link rel="stylesheet" href="static/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title class="title">Tetris</title>
+    <link rel="stylesheet" href="static/css/style.css">
 </head>
+
 <body>
-    <!-- Boîte de prompt stylisée -->
-    <div class="overlay" id="customPrompt">
-        <div class="prompt-box">
-            <h2>🏆 Entre ton nom de joueur :</h2>
-            <input type="text" id="playerNameInput" placeholder="Ex: ShadowKiller">
-            <br>
-            <button id="btn-confirm" class="btn-confirm">OK</button>
-            <button id="btn-cancel" class="btn-cancel">Annuler</button>
+    <div id="all-section"></div>
+    <section id="left-section">
+            <div id="fps-display"></div>
+        <!-- Tableau des scores -->
+        <div id="scoreboard">
+            <h2>Scores rank</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Name</th>
+                        <th>Score</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody id="scoreTableBody">
+                    <!-- Les scores seront ajoutés ici via score.js -->
+                </tbody>
+            </table>
+            <div id="pagination-buttons">
+                <button id="prevPage">← Prev</button>
+                <button id="nextPage">Next →</button>
+            </div>
         </div>
-    </div>
-
-    <h1 class="tetris-title">TETRIS</h1>
-    <div id="fps-display"></div>
-    <div id="rank"></div>
-    <div id="lives"></div>
-    <div id="information">
-        <p id="story-text">L'histoire commencera ici...</p>
-    </div>
-
-    <!-- Bouton pour mettre en pause/reprendre -->
-    <button id="pause-toggle-btn"></button>
-    
-    <!-- Menu de pause -->
-    <div id="pause-menu" class="hidden">
-        <div class="menu-content">
-            <h2>Pause</h2>
-            <button id="resume-btn">Resume</button>
-            <button id="reset-btn">Restart</button>
-            <button id="setting-btn">Setting</button>
-            <button id="quit-btn">Quit</button>
+        <div id="information">
+            <p id="story-text">L'histoire commencera ici...</p>
         </div>
-    </div>
+    </section>
 
-    <!-- Menu des réglages -->
-    <div id="setting-main" class="hidden">
-        <h3>SETTING</h3>
-        <p>SOUND 
-            <label class="switch">
-                <input type="checkbox" name="sound" checked>
-                <span class="slider round"></span>
-            </label>
-        </p>
-        <p>SHOW BACKGROUND
-            <label class="switch">
-                <input type="checkbox" name="background">
-                <span class="slider round"></span>
-            </label>              
-        </p>
-        <p>DISPLAY FPS
-            <label class="switch">
-                <input type="checkbox" name="fps">
-                <span class="slider round"></span>
-            </label>
-        </p>
-        <br>
-        <div id="mapSelector">
-            <span>MAP</span>
-            <div id="prevMap"></div>
-            <div id="map"></div>
-            <div id="nextMap"></div>
-        </div>
-        <br>
-        <button id="done">DONE</button>
-    </div>
 
-    <!-- La grille Tetris -->
-    <div id="fire-container"></div>
-    <div id="grid"></div>
-        <p id="score">Score: 0</p>
-        <p id="timer">Time: 0:00</p>
-
-    <!-- Tableau des scores -->
-    <div id="scoreboard">
-        <h2>Scores rank</h2>
+    <section id="middle-section">
+        <h1 class="tetris-title">TETRIS</h1>
+        <div id="grid"></div>
         <table>
-            <thead>
-                <tr>
-                    <th>Position</th>
-                    <th>Name</th>
-                    <th>Score</th>
-                    <th>Time</th>
-                </tr>
-            </thead>
-            <tbody id="scoreTableBody">
-                <!-- Les scores seront ajoutés ici via score.js -->
-            </tbody>
+            <td><div id="score">Score: 0</div></td>
+            <td><div id="timer">Time: 0:00</div></td>
         </table>
-        <div id="pagination-buttons">
-            <button id="prevPage">← Prev</button>
-            <button id="nextPage">Next →</button>
-        </div>
-    </div>
 
-    <!-- Prochaines pièces -->
-    <div id="next-pieces-container">
-        <h3>Next</h3>
-        <div id="next-piece-1" class="next-piece"></div>
-        <div id="next-piece-2" class="next-piece"></div>
-        <div id="next-piece-3" class="next-piece"></div>
-    </div>
+        
+
+        <!-- Menu des réglages -->
+        <div id="setting-main" class="hidden">
+            <divb
+            <h3>SETTING</h3>
+            <p>SOUND
+                <label class="switch">
+                    <input type="checkbox" name="sound" checked>
+                    <span class="slider round"></span>
+                </label>
+            </p>
+            <p>SHOW BACKGROUND
+                <label class="switch">
+                    <input type="checkbox" name="background">
+                    <span class="slider round"></span>
+                </label>
+            </p>
+            <p>DISPLAY FPS
+                <label class="switch">
+                    <input type="checkbox" name="fps">
+                    <span class="slider round"></span>
+                </label>
+            </p>
+            <br>
+            <div id="mapSelector">
+                <span>MAP</span>
+                <div id="prevMap"></div>
+                <div id="map"></div>
+                <div id="nextMap"></div>
+            </div>
+            <br>
+            <button id="done">DONE</button>
+        </div>
+
+        <!-- Menu de pause -->
+        <div id="pause-menu" class="hidden">
+            <div class="menu-content">
+                <h2>Pause</h2>
+                <button id="resume-btn">Resume</button>
+                <button id="reset-btn">Restart</button>
+                <button id="setting-btn">Setting</button>
+                <button id="quit-btn">Quit</button>
+            </div>
+        </div>
+
+        <!-- Boîte de prompt stylisée -->
+        <div class="overlay" id="customPrompt">
+            <div class="prompt-box">
+                <h2>🏆 Entre ton nom de joueur :</h2>
+                <input type="text" id="playerNameInput" placeholder="Ex: ShadowKiller">
+                <br>
+                <button id="btn-confirm" class="btn-confirm">OK</button>
+                <button id="btn-cancel" class="btn-cancel">Annuler</button>
+            </div>
+        </div>
+    </section>
+
+
+
+
+    <section id="right-section">
+        <!-- Prochaines pièces -->
+        <div id="next-pieces-container">
+            <div id="next-piece-1" class="next-piece"></div>
+            <div id="next-piece-2" class="next-piece"></div>
+            <div id="next-piece-3" class="next-piece"></div>
+        </div>
+        <!-- Bouton pour mettre en pause/reprendre -->
+         <div id="lives"></div>
+        <button id="pause-toggle-btn"></button>
+    </section>
 
     <!-- Arrière-plan animé -->
     <div id="tetromino-background"></div>
-
     <!-- Le point d'entrée unique vers nos modules -->
     <script type="module" src="static/js/main.js"></script>
 </body>
+
 </html>

@@ -6,11 +6,12 @@ const limit = 5;
 const tableBody = document.getElementById("scoreTableBody");
 
 export async function submitScore(name, score, time) {
+  console.log("Soumission du score :", { name, score, time });
   try {
     await fetch(apiBaseUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, score: parseInt(score), time }),
+      body: JSON.stringify({ name, score: score, time }),
     });
     // Après soumission, on recharge la page 1
     fetchScores(1);
@@ -36,7 +37,8 @@ function displayScores(scores) {
   tableBody.innerHTML = "";
 
   if (!scores || scores.length === 0) {
-    tableBody.innerHTML = "<tr><td colspan='4'>Aucun score disponible</td></tr>";
+    tableBody.innerHTML =
+      "<tr><td colspan='4'>Aucun score disponible</td></tr>";
     return;
   }
 

@@ -3,8 +3,6 @@
 // URL vers ton backend
 export const apiBaseUrl = "http://localhost:8080/api/scores";
 
-// Variable timer (exemple : pour garder la valeur du timer final)
-export let timer = "";
 
 // Petite fonction utilitaire
 export function wait(ms) {

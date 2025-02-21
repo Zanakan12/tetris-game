@@ -2,6 +2,7 @@
 
 let totalSeconds = 0;
 let timerInterval = null;
+export let timer = null;
 const timerDisplay = document.getElementById("timer");
 
 // Met à jour l'affichage du temps
@@ -13,6 +14,7 @@ function updateTimer() {
       seconds < 10 ? "0" : ""
     }${seconds}`;
   }
+  timer = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   totalSeconds++;
 }
 

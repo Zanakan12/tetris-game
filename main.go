@@ -127,7 +127,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 // 📌 Lancer l'API
 func main() {
-	loadScores() // Charger les scores existants
+	loadScores()
 
 	r := mux.NewRouter()
 
