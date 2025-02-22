@@ -1,16 +1,19 @@
 // static/score.js
 import { apiBaseUrl } from "./globals.js";
-
 let currentPage = 1;
 const limit = 5;
 const tableBody = document.getElementById("scoreTableBody");
 
-export async function submitScore(name, score, time) {
+export async function submitScore(playerName, score, time) {
   try {
     await fetch(apiBaseUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, score: score, time }),
+      body: JSON.stringify({
+        name: playerName,
+        score: score,
+        time: time,
+      }),
     });
     // Après soumission, on recharge la page 1
     fetchScores(1);

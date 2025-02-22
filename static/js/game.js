@@ -4,15 +4,15 @@ import { pauseTimer, startTimer, resetTimer } from "./timer.js";
 import { controlSound } from "./sound.js";
 import { submitScore } from "./score.js";
 import { resetGrid, loadMap, mapsName, mapPosition } from "./map.js";
+import { timer as globalTimer } from "./timer.js";
 
 // --- Variables globales du jeu ---
 export let isPaused = true;
 let score = 0;
 let lives = 3;
-let globalTimer = 0;
 const width = 10;
 let current;
-let currentPosition = 3;
+let currentPosition = 43;
 let currentRotation = 0;
 let nextPieces = [];
 let lastDropTime = 0;
@@ -366,32 +366,29 @@ function togglePause() {
 // -------------------- Fin de partie --------------------
 function endGame() {
   // 1) Vérifier collision en haut
-
+  let end = false;
+  let currentScore = 0;
   for (let i = 20; i < 29; i++) {
     if (squares[i].classList.contains("taken")) {
-      isPaused = true;
-      pauseTimer();
-      showPrompt().then((playerName) => {
-        if (playerName) {
-          submitScore(playerName, score, globalTimer);
-        }
-      });
+      end = true;
+      currentScore = score;
+      break;
     }
+  }
 
-    // 2) Vérifier si plus de vies
-    if (lives < 1) {
-      pauseTimer();
-      isPaused = true;
-      showPrompt().then((playerName) => {
-        if (playerName) {
-          submitScore(playerName, score, globalTimer);
-        }
-      });
-    }
+  // 2) Vérifier si plus de vies
+  if (lives < 1 || end) {
+    pauseTimer();
+    isPaused = true;
+    showPrompt().then((playerName) => {
+      if (playerName) {
+        submitScore(playerName, currentScore, globalTimer);
+      }
+    });
   }
 }
 
-function showPrompt() {
+export function showPrompt() {
   return new Promise((resolve) => {
     const promptEl = document.getElementById("customPrompt");
     if (!promptEl) return resolve("Player1");
@@ -433,9 +430,8 @@ async function closePrompt() {
   if (promptEl) {
     promptEl.classList.remove("active");
   }
-  await resetGame().then(() => {
-    resetGrid();
-  });
+  resetGame();
+  resetGrid();
 }
 
 async function resetGame() {
@@ -448,6 +444,7 @@ async function resetGame() {
   typeWriter(echec, "story-text", 100);
   dropInterval = 500;
   score = 0;
+  currentPosition = 33;
   if (scoreDisplay) scoreDisplay.textContent = `Score: ${score}`;
 }
 
