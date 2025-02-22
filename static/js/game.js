@@ -5,7 +5,6 @@ import { controlSound } from "./sound.js";
 import { submitScore } from "./score.js";
 import { resetGrid, loadMap, mapsName, mapPosition } from "./map.js";
 
-
 // --- Variables globales du jeu ---
 export let isPaused = true;
 let score = 0;
@@ -367,36 +366,33 @@ function togglePause() {
 // -------------------- Fin de partie --------------------
 function endGame() {
   // 1) Vérifier collision en haut
-  if (
-    current.some((index) =>
-      squares[currentPosition + index].classList.contains("taken")
-    )
-  ) {
-    isPaused = true;
-    pauseTimer();
-    showPrompt().then((playerName) => {
-      if (playerName) {
-        submitScore(playerName, score, globalTimer);
-      }
-    });
-    resetGrid();
-    resetGame();
-  }
-  // 2) Vérifier si plus de vies
-  if (lives < 1) {
-    pauseTimer();
-    isPaused = true;
-    showPrompt().then((playerName) => {
-      if (playerName) {
-        submitScore(playerName, score, globalTimer);
-      }
-    });
+
+  for (let i = 20; i < 29; i++) {
+    if (squares[i].classList.contains("taken")) {
+      isPaused = true;
+      pauseTimer();
+      showPrompt().then((playerName) => {
+        if (playerName) {
+          submitScore(playerName, score, globalTimer);
+        }
+      });
+    }
+
+    // 2) Vérifier si plus de vies
+    if (lives < 1) {
+      pauseTimer();
+      isPaused = true;
+      showPrompt().then((playerName) => {
+        if (playerName) {
+          submitScore(playerName, score, globalTimer);
+        }
+      });
+    }
   }
 }
 
 function showPrompt() {
-  return new Promise((
-    resolve) => {
+  return new Promise((resolve) => {
     const promptEl = document.getElementById("customPrompt");
     if (!promptEl) return resolve("Player1");
 
@@ -432,16 +428,17 @@ function showPrompt() {
   });
 }
 
-function closePrompt() {
+async function closePrompt() {
   const promptEl = document.getElementById("customPrompt");
   if (promptEl) {
     promptEl.classList.remove("active");
   }
-  resetGame();
-  resetGrid();
+  await resetGame().then(() => {
+    resetGrid();
+  });
 }
 
-function resetGame() {
+async function resetGame() {
   lives = 3;
   pauseButton.style.backgroundImage = "url('static/image/playBouton.svg')";
   manageLives(lives);
@@ -456,7 +453,7 @@ function resetGame() {
 
 // -------------------- Suppression des lignes --------------------
 function removeLine() {
-  for (let i = 0; i < 200; i += width) {
+  for (let i = 0; i < 230; i += width) {
     const row = Array.from({ length: width }, (_, j) => i + j);
     if (row.every((index) => squares[index]?.classList.contains("taken"))) {
       controlSound("remove");
@@ -601,6 +598,15 @@ export function initGame() {
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
   if (grid) {
+    for (let i = 0; i < 30; i++) {
+      const cell = document.createElement("div");
+      cell.style.backgroundRepeat = "no-repeat"; // No repeating of the image
+      cell.style.backgroundSize = "cover"; // Make the image fill the container
+      cell.style.backgroundPosition = "center";
+      cell.classList.add("invisible");
+      grid.appendChild(cell);
+    }
+
     for (let i = 0; i < 200; i++) {
       const cell = document.createElement("div");
 

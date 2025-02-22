@@ -6,7 +6,6 @@ const limit = 5;
 const tableBody = document.getElementById("scoreTableBody");
 
 export async function submitScore(name, score, time) {
-  console.log("Soumission du score :", { name, score, time });
   try {
     await fetch(apiBaseUrl, {
       method: "POST",

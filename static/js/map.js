@@ -58,7 +58,7 @@ export function loadMap(mapKey) {
 
   const selectedMap = maps[mapKey];
   // On applique la map
-  for (let i = 0; i < selectedMap.length; i++) {
+  for (let i = 40; i < selectedMap.length; i++) {
     if (selectedMap[i] === 1 && squares[i]) {
       squares[i].classList.add("trap");
       squares[i].textContent = "💠"; // Mur
@@ -68,7 +68,7 @@ export function loadMap(mapKey) {
 
 // Réinitialise la grille (efface tout)
 export function resetGrid() {
-  for (let i = 0; i < 200; i++) {
+  for (let i = 0; i < 230; i++) {
     squares[i].classList.remove("block", "taken", "trap", ...letters);
     squares[i].textContent = "";
   }

@@ -17,7 +17,9 @@ p,
 button {
   font-family: "Press Start 2P", cursive !important;
 }
-
+.invisible {
+  display: none !important;
+}
 #left-section {
   width: 40%;
   display: flex;
@@ -102,6 +104,7 @@ button {
   border: solid 1px;
   border-color: #dddddd;
   margin-top: 50px;
+  justify-content: center;
 }
 
 #scoreboard table {
@@ -119,7 +122,6 @@ button {
   padding: 10px;
   text-align: left;
   background-color: #222;
-  
 }
 
 thead th {
@@ -135,9 +137,16 @@ thead th {
   font-size: 10px;
 }
 
+#pagination-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20%;
+}
+
 #pagination-buton,
 #pagination-buton td {
-  border: none !important;}
+  border: none !important;
+}
 
 /* Boutons de pagination */
 #scoreboard button {
@@ -145,13 +154,11 @@ thead th {
   margin-top: 5px;
   padding: 5px;
   border: none;
-  background-color: #f1f2f0;
-  color: rgb(0, 0, 0);
+  background: none;
+  color: rgb(245, 245, 245);
   cursor: pointer;
   border-radius: 4px;
-  font-size: 7px;
-  margin-left: 85px
-;
+  font-size: 15px;
 }
 
 #scoreboard-buttons {
