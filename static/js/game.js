@@ -9,10 +9,10 @@ import { timer as globalTimer } from "./timer.js";
 // --- Variables globales du jeu ---
 export let isPaused = true;
 let score = 0;
-let lives = 3;
+let lives;
 const width = 10;
 let current;
-let currentPosition = 43;
+let currentPosition;
 let currentRotation = 0;
 let nextPieces = [];
 let lastDropTime = 0;
@@ -322,7 +322,7 @@ export function startNewTetromino() {
 
   currentRotation = 0;
   current = customTetrominoes[random][currentRotation];
-  currentPosition = 4;
+  currentPosition = 3;
   updateNextPieces();
   draw();
 }
@@ -444,7 +444,7 @@ async function resetGame() {
   typeWriter(echec, "story-text", 100);
   dropInterval = 500;
   score = 0;
-  currentPosition = 33;
+  currentPosition = 3;
   if (scoreDisplay) scoreDisplay.textContent = `Score: ${score}`;
 }
 
@@ -638,7 +638,7 @@ export function initGame() {
   random = letters[Math.floor(Math.random() * letters.length)];
   currentRotation = 0;
   current = customTetrominoes[random][currentRotation];
-  currentPosition = 4;
+  currentPosition = 3;
   updateNextPieces();
   draw();
 

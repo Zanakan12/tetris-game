@@ -93,7 +93,11 @@ export function startIntro() {
           "Dans un monde numérique,",
           "les formes s’empilent à l’infini...",
           "Seul un héros peut organiser ce chaos.",
-          "Seras-tu à la hauteur du défi ?"
+          "Seras-tu à la hauteur du défi ?",
+          "Tu es un dieu, fan de Damso, tu utilises une machine",
+          "Cette Machine te permet de déplacer les formes et faire des miracles",
+          "A chaque niveau, Dam's voit sa vie changer par des evements inattendus",
+          "Mais attention, la vitesse augmente",
       ];
       let j = 0;
       
