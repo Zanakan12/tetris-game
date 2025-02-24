@@ -15,6 +15,11 @@
     "time": "5:08"
   },
   {
+    "name": "Player1",
+    "score": 220,
+    "time": "7:03"
+  },
+  {
     "name": "close",
     "score": 10,
     "time": "0:27"
@@ -48,5 +53,10 @@
     "name": "Player1",
     "score": 0,
     "time": "0:10"
+  },
+  {
+    "name": "mike",
+    "score": 0,
+    "time": "1:08"
   }
 ]

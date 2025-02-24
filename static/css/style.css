@@ -37,7 +37,6 @@ button {
 }
 
 #right-section {
-  width: 40%;
   display: flex;
   flex-direction: column;
   gap: 100px;
@@ -179,7 +178,9 @@ thead th {
 #next-pieces-container {
   display: flex;
   flex-direction: column;
+  border: 2px solid rgb(183, 183, 183);
   gap: 10px;
+  width: 104px;
 }
 
 #next-pieces-container div {
@@ -584,7 +585,6 @@ input:checked + .slider:before {
 #lives {
   border: solid 1px;
   border-color: #dddddd;
-  background: #2196f3;
   width: 188px;
 }
 
