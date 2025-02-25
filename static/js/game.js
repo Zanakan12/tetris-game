@@ -19,6 +19,7 @@ let lastDropTime = 0;
 let dropInterval = 500;
 let freezeDelay = false;
 let random;
+let currentLevel = [];
 
 // Tétrominos personnalisés (tes lettres)
 // --- Définition des Tetrominos personnalisés (lettres) ---
@@ -532,7 +533,9 @@ function showStory(sc) {
     10: "Damso marque l’histoire du rap ! 👑",
   };
   const bottomLineCells = document.querySelectorAll(".bottom-line");
+
   let level;
+
   if (sc < 20) level = 1;
   else if (sc < 40) level = 2;
   else if (sc < 60) level = 3;
@@ -542,8 +545,10 @@ function showStory(sc) {
   else if (sc < 140) level = 7;
   else if (sc < 160) level = 8;
   else if (sc < 180) level = 9;
-  else level = 10;
-
+  else level = 10; 
+  if (currentLevel.includes(level)) return;
+  currentLevel.push(level);
+ 
   typeWriter(levels[level], "story-text", 100);
 
   bottomLineCells.forEach((cell) => {

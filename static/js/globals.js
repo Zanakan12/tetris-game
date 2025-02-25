@@ -96,7 +96,7 @@ export function startIntro() {
           "Seras-tu à la hauteur du défi ?",
           "Tu es un dieu, fan de Damso, tu utilises une machine",
           "Cette Machine te permet de déplacer les formes et faire des miracles",
-          "A chaque niveau, Dam's voit sa vie changer par des evements inattendus",
+          "A chaque niveau, Dam's voit sa vie changé par des evenements inattendus",
           "Mais attention, la vitesse augmente",
       ];
       let j = 0;
