@@ -548,7 +548,7 @@ function showStory(sc) {
   else level = 10; 
   if (currentLevel.includes(level)) return;
   currentLevel.push(level);
- 
+  dropInterval -= 10;
   typeWriter(levels[level], "story-text", 100);
 
   bottomLineCells.forEach((cell) => {
@@ -659,8 +659,10 @@ export function initGame() {
 
   // 5) Gérer le bouton pause
   if (pauseButton) {
+    const arrow1 = document.getElementById("arrow1");
     pauseButton.style.backgroundImage = "url('static/image/playBouton.svg')";
     pauseButton.addEventListener("click", () => {
+    arrow1.style.visibility = "hidden";
       pauseButton.style.backgroundImage = "url('static/image/pauseBouton.svg')";
       if (!isPaused) togglePause();
       else {

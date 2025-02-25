@@ -256,15 +256,17 @@ thead th {
 }
 
 .menu-content {
-  background: #222;
+  background: #0a0909;
+  margin-left: 200px;
   color: white;
   padding: 20px;
   text-align: center;
   border-radius: 10px;
-  box-shadow: 0px 4px 15px rgba(255, 255, 255, 0.2);
-  max-width: 400px;
+  box-shadow: 0px 4px 15px rgba(26, 26, 26, 0.2);
+  max-width: 200px;
   width: 80%;
   font-family: Arial, sans-serif;
+
 }
 
 .menu-content h2 {
@@ -324,8 +326,8 @@ thead th {
 
 #setting-main {
   position: fixed;
-  top: 350px;
-  left: 800px;
+  top: 40%;
+  left: 46.5%;
   width: 304px;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(5px);
@@ -588,4 +590,30 @@ input:checked + .slider:before {
   width: 188px;
 }
 
-/* retro style */
+/* arrow */
+
+.arrow {
+  position: absolute;
+  top: 83%;
+  right: 26%;
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 20px solid rgb(206, 199, 0); /* Arrow color */
+  
+  /* Blink animation: 2 seconds total (1s visible, 1s invisible) */
+  animation: blinkArrow 2s infinite;
+}
+
+@keyframes blinkArrow {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
