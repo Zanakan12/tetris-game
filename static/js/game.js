@@ -545,10 +545,10 @@ function showStory(sc) {
   else if (sc < 140) level = 7;
   else if (sc < 160) level = 8;
   else if (sc < 180) level = 9;
-  else level = 10; 
+  else level = 10;
   if (currentLevel.includes(level)) return;
   currentLevel.push(level);
-  dropInterval -= 10;
+  dropInterval -= 100;
   typeWriter(levels[level], "story-text", 100);
 
   bottomLineCells.forEach((cell) => {
@@ -596,7 +596,6 @@ function manageFpsCheckbox() {
 export function initGame() {
   console.log("Game initialized");
   // 1) Créer la grille (200 + 10)
-
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
   if (grid) {
@@ -654,7 +653,8 @@ export function initGame() {
     else if (e.key === "ArrowRight") moveRight();
     else if (e.key === "ArrowUp") rotate();
     else if (e.key === "ArrowDown") moveDown();
-    else if (e.key.toLowerCase() === "p") togglePause();
+    else if (e.key.toLowerCase() === "space") togglePause();
+    else if (e.key.toLowerCase() === "r") resetGame();
   });
 
   // 5) Gérer le bouton pause
@@ -662,7 +662,7 @@ export function initGame() {
     const arrow1 = document.getElementById("arrow1");
     pauseButton.style.backgroundImage = "url('static/image/playBouton.svg')";
     pauseButton.addEventListener("click", () => {
-    arrow1.style.visibility = "hidden";
+      arrow1.style.visibility = "hidden";
       pauseButton.style.backgroundImage = "url('static/image/pauseBouton.svg')";
       if (!isPaused) togglePause();
       else {
