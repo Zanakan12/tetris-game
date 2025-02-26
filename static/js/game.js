@@ -192,6 +192,7 @@ async function moveDown() {
 
 function moveLeft() {
   undraw();
+  trapTouch();
   const isAtLeftEdge = current.some(
     (index) => (currentPosition + index) % width === 0
   );
@@ -212,6 +213,7 @@ function moveLeft() {
 
 function moveRight() {
   undraw();
+  trapTouch();
   const isAtRightEdge = current.some(
     (index) => (currentPosition + index) % width === width - 1
   );
